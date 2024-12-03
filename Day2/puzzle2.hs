@@ -15,5 +15,4 @@ removeLevel xs = zipWith (++) ys zs
 main = do
     contents <- lines <$> readFile "day2.txt"
     let reports = map read . words <$> contents
-        safeCount = length . filter (any isSafe) $ map removeLevel reports
-    print safeCount
+    print . length . filter (any isSafe) $ map removeLevel reports

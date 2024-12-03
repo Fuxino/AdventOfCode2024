@@ -10,5 +10,4 @@ isSafe xs = (isAscending xs || isDescending xs) && maximum distances <= 3 && min
 main = do
     contents <- lines <$> readFile "day2.txt"
     let reports = map read . words <$> contents
-        safeCount = length $ filter isSafe reports
-    print safeCount
+    print . length $ filter isSafe reports

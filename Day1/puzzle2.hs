@@ -8,5 +8,4 @@ similarityScore xs ys = let elemsY = [ (head y, length y) | y <- (group . sort) 
 main = do
     contents <- lines <$> readFile "day1.txt"
     let [x, y] = transpose $ map read . words <$> contents
-        score = similarityScore x y
-    print score
+    print $ similarityScore x y
