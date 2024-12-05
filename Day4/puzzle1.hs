@@ -5,17 +5,17 @@ diagonals xs = diagonals' xs ++ diagonals' ((transpose . reverse) xs)
                where diagonals' xs = transpose (zipWith drop [0..] xs)
                                      ++ transpose (zipWith drop [1..] (transpose xs))
 
-countSubstrings :: String -> [String] -> Int
-countSubstrings word text = sum (map (countSubstrings' word) text) + sum (map (countSubstrings' word . reverse) text)
-                            + sum (map (countSubstrings' word) cols) + sum (map (countSubstrings' word . reverse) cols)
-                            + sum (map (countSubstrings' word) diags) + sum (map (countSubstrings' word . reverse) diags)
+countOccurrences :: String -> [String] -> Int
+countOccurrences word text = sum (map (countOccurrences' word) text) + sum (map (countOccurrences' word . reverse) text)
+                            + sum (map (countOccurrences' word) cols) + sum (map (countOccurrences' word . reverse) cols)
+                            + sum (map (countOccurrences' word) diags) + sum (map (countOccurrences' word . reverse) diags)
                             where cols  = transpose text
                                   diags = diagonals text
-                                  countSubstrings' _ [] = 0
-                                  countSubstrings' word text@(_:rest) = if word `isPrefixOf` text
-                                                                           then 1 + countSubstrings' word rest
-                                                                           else countSubstrings' word rest
+                                  countOccurrences' _ [] = 0
+                                  countOccurrences' word text@(_:rest) = if word `isPrefixOf` text
+                                                                           then 1 + countOccurrences' word rest
+                                                                           else countOccurrences' word rest
     
 main = do
     contents <- lines <$> readFile "day4.txt"
-    print $ countSubstrings "XMAS" contents
+    print $ countOccurrences "XMAS" contents
