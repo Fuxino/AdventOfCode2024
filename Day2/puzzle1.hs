@@ -1,5 +1,4 @@
 import Data.List (sort)
-import System.IO
 
 isSafe :: [Int] -> Bool
 isSafe xs = (isAscending xs || isDescending xs) && maximum distances <= 3 && minimum distances >= 1

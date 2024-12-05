@@ -1,5 +1,4 @@
 import Data.List (transpose, sort, group)
-import System.IO
 
 similarityScore :: [Int] -> [Int] -> Int
 similarityScore xs ys = let elemsY = [ (head y, length y) | y <- (group . sort) ys ]
