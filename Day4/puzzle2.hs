@@ -10,8 +10,8 @@ countSubstrings word text = sum (map (countSubstrings' word) diags) + sum (map (
                             where diags = diagonals text
                                   countSubstrings' _ [] = 0
                                   countSubstrings' word text@(_:rest) = if word `isPrefixOf` text
-                                                                        then 1 + countSubstrings' word rest
-                                                                        else countSubstrings' word rest
+                                                                           then 1 + countSubstrings' word rest
+                                                                           else countSubstrings' word rest
 
 submatricesVert :: Int -> [String] -> [[String]]
 submatricesVert _ [] = []
