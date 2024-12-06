@@ -11,7 +11,13 @@ getDirection '>' = R
 getDirection 'v' = D
 getDirection '<' = L
 
-getStartPosition:: Char -> Grid -> Position
+printDirection :: Direction -> Char
+printDirection U = '^'
+printDirection R = '>'
+printDirection D = 'v'
+printDirection L = '<'
+
+getStartPosition :: Char -> Grid -> Position
 getStartPosition c grid = (x, y)
                           where x = fromMaybe (-1) . elemIndex True . map (isJust . elemIndex c) $ grid
                                 y = if x == -1 then -1 else fromMaybe (-1) . elemIndex c $ grid !! x
@@ -45,9 +51,12 @@ getNextPosition (x, y) L grid = let newPos = (x, y - 1)
                                       else (newPos, L)
 
 markVisited :: Position -> Char -> Grid -> Grid
-markVisited (x, y) c grid = let row = grid !! x
-                                newRow = take y row ++ [c] ++ drop (y + 1) row
-                            in  take x grid ++ [newRow] ++ drop (x + 1) grid
+markVisited (x, y) c grid = let gridVal = getGridVal (x, y) grid
+                            in  if gridVal == '#' || gridVal == '^' || gridVal == '>' || gridVal == 'v' || gridVal == '<'
+                                  then grid
+                                  else let row = grid !! x
+                                           newRow = take y row ++ [c] ++ drop (y + 1) row
+                                       in  take x grid ++ [newRow] ++ drop (x + 1) grid
 
 visitGrid :: Position -> Direction -> Grid -> Grid
 visitGrid (x, y) direction grid = let newGrid = markVisited (x, y) 'X' grid
@@ -56,9 +65,27 @@ visitGrid (x, y) direction grid = let newGrid = markVisited (x, y) 'X' grid
                                          then visitGrid nextPosition newDirection newGrid
                                          else newGrid
 
+checkGridLoop :: Position -> Direction -> Grid -> Bool
+checkGridLoop startPosition direction grid = let (nextPosition, newDirection) = getNextPosition startPosition direction grid
+                                                 newDirectionChar = printDirection newDirection
+                                                 newGrid = markVisited nextPosition newDirectionChar grid
+                                             in  if not $ nextPosition `isInside` grid
+                                                   then False
+                                                   else if getGridVal nextPosition grid == newDirectionChar
+                                                     then True
+                                                     else checkGridLoop nextPosition newDirection newGrid
+
+setGridObstacles :: Position -> Grid -> [Grid]
+setGridObstacles startPosition grid = let positions = [ (x, y) | x <- [0..(length grid - 1)], y <- [0..(length (head grid) - 1)], (x, y) /= startPosition, getGridVal (x, y) grid == 'X' ]
+                                      in  zipWith (`markVisited` '#') positions (replicate (length positions) grid)
+ 
+
 main = do
     contents <- lines <$> readFile "day6.txt"
     let (x, y) = (\w x y z -> head $ filter ((>= 0) . fst) [w, x, y, z]) <$> getStartPosition 'v' <*> getStartPosition '^'
                                                                          <*> getStartPosition '<' <*> getStartPosition '>' $ contents
         direction = getDirection $ (contents !! x) !! y
-    print . length . filter (== 'X') . concat $ visitGrid (x, y) direction contents
+        grid = visitGrid (x, y) direction contents
+        gridObstacles = setGridObstacles (x, y) grid 
+        loops = filter (checkGridLoop (x, y) direction) gridObstacles
+    print $ length loops
