@@ -53,8 +53,8 @@ visitGrid :: Position -> Direction -> Grid -> Grid
 visitGrid (x, y) direction grid = let newGrid = markVisited (x, y) 'X' grid
                                       (nextPosition, newDirection) = getNextPosition (x, y) direction grid
                                   in  if nextPosition `isInside` newGrid
-                                         then visitGrid nextPosition newDirection newGrid
-                                         else newGrid
+                                        then visitGrid nextPosition newDirection newGrid
+                                        else newGrid
 
 main = do
     contents <- lines <$> readFile "day6.txt"

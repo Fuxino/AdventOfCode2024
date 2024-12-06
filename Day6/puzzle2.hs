@@ -62,18 +62,16 @@ visitGrid :: Position -> Direction -> Grid -> Grid
 visitGrid (x, y) direction grid = let newGrid = markVisited (x, y) 'X' grid
                                       (nextPosition, newDirection) = getNextPosition (x, y) direction grid
                                   in  if nextPosition `isInside` newGrid
-                                         then visitGrid nextPosition newDirection newGrid
-                                         else newGrid
+                                        then visitGrid nextPosition newDirection newGrid
+                                        else newGrid
 
 checkGridLoop :: Position -> Direction -> Grid -> Bool
 checkGridLoop startPosition direction grid = let (nextPosition, newDirection) = getNextPosition startPosition direction grid
                                                  newDirectionChar = printDirection newDirection
                                                  newGrid = markVisited nextPosition newDirectionChar grid
-                                             in  if not $ nextPosition `isInside` grid
-                                                   then False
-                                                   else if getGridVal nextPosition grid == newDirectionChar
-                                                     then True
-                                                     else checkGridLoop nextPosition newDirection newGrid
+                                             in  (nextPosition `isInside` grid)
+                                                 && ((getGridVal nextPosition grid == newDirectionChar)
+                                                    || checkGridLoop nextPosition newDirection newGrid)
 
 setGridObstacles :: Position -> Grid -> [Grid]
 setGridObstacles startPosition grid = let positions = [ (x, y) | x <- [0..(length grid - 1)], y <- [0..(length (head grid) - 1)], (x, y) /= startPosition, getGridVal (x, y) grid == 'X' ]
