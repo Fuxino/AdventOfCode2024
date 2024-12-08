@@ -13,7 +13,7 @@ readAntenna frequency coordinates = Antenna {frequency=frequency, coordinates=co
 
 getAntennas :: [String] -> [Antenna]
 getAntennas grid = concat . getZipList $ getAntennasRow <$> ZipList [0..] <*> ZipList grid
-                     where getAntennasRow n row = [ readAntenna x (n, y) | (x, y) <- zip row [0..], x /= '.' ]
+                       where getAntennasRow n row = [ readAntenna x (n, y) | (x, y) <- zip row [0..], x /= '.' ]
 
 isInside :: Coords -> Int -> Int -> Bool
 isInside c x y = fst c >= 0 && fst c < x && snd c >= 0 && snd c < y
@@ -27,50 +27,13 @@ getAntinodes a b maxX maxY = let xa = fst $ coordinates a
                                  ya = snd $ coordinates a
                                  xb = fst $ coordinates b
                                  yb = snd $ coordinates b
-                                 distX = abs $ xa - xb
-                                 distY = abs $ ya - yb
+                                 distX = xa - xb
+                                 distY = ya - yb
                              in  if frequency a /= frequency b || coordinates a == coordinates b
                                      then []
-                                 else if xa > xb && ya > yb
-                                     then filter (\c -> isInside c maxX maxY) [(xa + distX, ya + distY), (xb - distX, yb - distY)]
-                                          ++ takeWhile (\c -> isInside c maxX maxY) (generateCoords (coordinates a) (distX, distY))
-                                          ++ takeWhile (\c -> isInside c maxX maxY) (generateCoords (coordinates b) (-distX, -distY))
-                                          ++ [coordinates a, coordinates b]
-                                 else if xa > xb && ya < yb
-                                     then filter (\c -> isInside c maxX maxY) [(xa + distX, ya - distY), (xb - distX, yb + distY)]
-                                          ++ takeWhile (\c -> isInside c maxX maxY) (generateCoords (coordinates a) (distX, -distY))
-                                          ++ takeWhile (\c -> isInside c maxX maxY) (generateCoords (coordinates b) (-distX, distY))
-                                          ++ [coordinates a, coordinates b]
-                                 else if xa == xb && ya > yb
-                                     then filter (\c -> isInside c maxX maxY) [(xa, ya + distY), (xb, yb - distY)]
-                                          ++ takeWhile (\c -> isInside c maxX maxY) (generateCoords (coordinates a) (0, distY))
-                                          ++ takeWhile (\c -> isInside c maxX maxY) (generateCoords (coordinates b) (0, -distY))
-                                          ++ [coordinates a, coordinates b]
-                                 else if xa == xb && ya < yb
-                                     then filter (\c -> isInside c maxX maxY) [(xa, ya - distY), (xb, yb + distY)]
-                                          ++ takeWhile (\c -> isInside c maxX maxY) (generateCoords (coordinates a) (0, -distY))
-                                          ++ takeWhile (\c -> isInside c maxX maxY) (generateCoords (coordinates b) (0, distY))
-                                          ++ [coordinates a, coordinates b]
-                                 else if ya == yb && xa > xb
-                                     then filter (\c -> isInside c maxX maxY) [(xa + distX, ya), (xb - distX, yb)]
-                                          ++ takeWhile (\c -> isInside c maxX maxY) (generateCoords (coordinates a) (distX, 0))
-                                          ++ takeWhile (\c -> isInside c maxX maxY) (generateCoords (coordinates b) (-distX, 0))
-                                          ++ [coordinates a, coordinates b]
-                                 else if ya == yb && xa < xb
-                                     then filter (\c -> isInside c maxX maxY) [(xa - distX, ya), (xb + distX, yb)]
-                                          ++ takeWhile (\c -> isInside c maxX maxY) (generateCoords (coordinates a) (-distX, 0))
-                                          ++ takeWhile (\c -> isInside c maxX maxY) (generateCoords (coordinates b) (distX, 0))
-                                          ++ [coordinates a, coordinates b]
-                                 else if xa < xb && ya > yb
-                                     then filter (\c -> isInside c maxX maxY) [(xa - distX, ya + distY), (xb + distX, yb - distY)]
-                                          ++ takeWhile (\c -> isInside c maxX maxY) (generateCoords (coordinates a) (-distX, distY))
-                                          ++ takeWhile (\c -> isInside c maxX maxY) (generateCoords (coordinates b) (distX, -distY))
-                                          ++ [coordinates a, coordinates b]
-                                 else filter (\c -> isInside c maxX maxY) [(xa - distX, ya - distY), (xb + distX, yb + distY)]
-                                          ++ takeWhile (\c -> isInside c maxX maxY) (generateCoords (coordinates a) (-distX, -distY))
-                                          ++ takeWhile (\c -> isInside c maxX maxY) (generateCoords (coordinates b) (distX, distY))
-                                          ++ [coordinates a, coordinates b]
-
+                                 else filter (\c -> isInside c maxX maxY) [(2 * xa - xb, 2 * ya - yb), (2 * xb - xa, 2 * yb - ya)]
+                                      ++ takeWhile (\c -> isInside c maxX maxY) (generateCoords (coordinates a) (distX, distY))
+                                      ++ takeWhile (\c -> isInside c maxX maxY) (generateCoords (coordinates b) (-distX, -distY))
 
 main = do
     contents <- lines <$> readFile "day8.txt"

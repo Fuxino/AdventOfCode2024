@@ -16,25 +16,15 @@ getAntennas grid = concat . getZipList $ getAntennasRow <$> ZipList [0..] <*> Zi
 
 isInside :: Coords -> Int -> Int -> Bool
 isInside c x y = fst c >= 0 && fst c < x && snd c >= 0 && snd c < y
-                
+
 getAntinodes :: Antenna -> Antenna -> Int -> Int -> [Coords]
-getAntinodes a b maxX maxY= let xa = fst $ coordinates a
-                                ya = snd $ coordinates a
-                                xb = fst $ coordinates b
-                                yb = snd $ coordinates b
-                                distX = abs $ xa - xb
-                                distY = abs $ ya - yb
-                            in  if frequency a /= frequency b || coordinates a == coordinates b
-                                    then []
-                                else if xa > xb && ya > yb
-                                    then filter (\c -> isInside c maxX maxY) [(xb - distX, yb - distY), (xa + distX, ya + distY)]
-                                else if xa > xb && ya < yb
-                                    then filter (\c -> isInside c maxX maxY) [(xa + distX, ya - distY), (xb - distX, yb + distY)]
-                                else if xa == xb && ya > yb
-                                    then filter (\c -> isInside c maxX maxY) [(xa, ya + distY), (xb, yb - distY)]
-                                else if ya == yb && xa > xb
-                                    then filter (\c -> isInside c maxX maxY) [(xa + distX, ya), (xb - distX, yb)]
-                                else getAntinodes b a maxX maxY
+getAntinodes a b maxX maxY = let xa = fst $ coordinates a
+                                 ya = snd $ coordinates a
+                                 xb = fst $ coordinates b
+                                 yb = snd $ coordinates b
+                             in  if frequency a /= frequency b || coordinates a == coordinates b
+                                     then []
+                                 else filter (\c -> isInside c maxX maxY) [(2 * xa - xb, 2 * ya - yb), (2 * xb - xa, 2 * yb - ya)]
 
 main = do
     contents <- lines <$> readFile "day8.txt"
