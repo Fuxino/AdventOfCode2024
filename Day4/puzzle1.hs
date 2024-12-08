@@ -13,8 +13,8 @@ countOccurrences word text = sum (map (countOccurrences' word) text) + sum (map 
                                   diags = diagonals text
                                   countOccurrences' _ [] = 0
                                   countOccurrences' word text@(_:rest) = if word `isPrefixOf` text
-                                                                           then 1 + countOccurrences' word rest
-                                                                           else countOccurrences' word rest
+                                                                             then 1 + countOccurrences' word rest
+                                                                         else countOccurrences' word rest
     
 main = do
     contents <- lines <$> readFile "day4.txt"

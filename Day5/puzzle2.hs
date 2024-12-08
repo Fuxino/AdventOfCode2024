@@ -12,9 +12,9 @@ getMiddle xs = xs !! (length xs `div` 2)
 sortOnRules :: [(Int, Int)] -> [Int] -> [Int]
 sortOnRules _ [] = []
 sortOnRules rules (x:xs) = sortOnRules rules beforeArray ++ [x] ++ sortOnRules rules afterArray
-                            where afterArray  = xs \\ before
-                                  beforeArray = xs \\ afterArray
-                                  before      = [ p | (p, n) <- rules, n  == x ]
+                               where afterArray  = xs \\ before
+                                     beforeArray = xs \\ afterArray
+                                     before      = [ p | (p, n) <- rules, n  == x ]
 
 main = do
     contents <- map (splitOn "|") . lines <$> readFile "day5.txt"

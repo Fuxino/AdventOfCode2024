@@ -2,16 +2,16 @@ import Data.List (transpose, isPrefixOf, tails)
 
 diagonals :: [String] -> [String]
 diagonals xs = diagonals' xs ++ diagonals' ((transpose . reverse) xs)
-               where diagonals' xs = transpose (zipWith drop [0..] xs)
-                                     ++ transpose (zipWith drop [1..] (transpose xs))
+                   where diagonals' xs = transpose (zipWith drop [0..] xs)
+                                         ++ transpose (zipWith drop [1..] (transpose xs))
 
 countOccurrences :: String -> [String] -> Int
 countOccurrences word text = sum (map (countOccurrences' word) diags) + sum (map (countOccurrences' word . reverse) diags)
-                            where diags = diagonals text
-                                  countOccurrences' _ [] = 0
-                                  countOccurrences' word text@(_:rest) = if word `isPrefixOf` text
-                                                                           then 1 + countOccurrences' word rest
-                                                                           else countOccurrences' word rest
+                                 where diags = diagonals text
+                                       countOccurrences' _ [] = 0
+                                       countOccurrences' word text@(_:rest) = if word `isPrefixOf` text
+                                                                                  then 1 + countOccurrences' word rest
+                                                                              else countOccurrences' word rest
 
 submatricesVert :: Int -> [String] -> [[String]]
 submatricesVert _ [] = []

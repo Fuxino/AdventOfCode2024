@@ -19,8 +19,8 @@ printDirection L = '<'
 
 getStartPosition :: Char -> Grid -> Position
 getStartPosition c grid = (x, y)
-                          where x = fromMaybe (-1) . elemIndex True . map (isJust . elemIndex c) $ grid
-                                y = if x == -1 then -1 else fromMaybe (-1) . elemIndex c $ grid !! x
+                              where x = fromMaybe (-1) . elemIndex True . map (isJust . elemIndex c) $ grid
+                                    y = if x == -1 then -1 else fromMaybe (-1) . elemIndex c $ grid !! x
 
 getGridVal :: Position -> Grid -> Char
 getGridVal (x, y) grid = (grid !! x) !! y
@@ -32,38 +32,38 @@ getNextPosition :: Position -> Direction -> Grid -> (Position, Direction)
 getNextPosition (x, y) U grid = let newPos = (x - 1, y)
                                     gridVal = getGridVal newPos grid
                                 in  if newPos `isInside` grid && gridVal == '#'
-                                      then getNextPosition (x, y) R grid
-                                      else (newPos, U)
+                                        then getNextPosition (x, y) R grid
+                                    else (newPos, U)
 getNextPosition (x, y) R grid = let newPos = (x, y + 1)
                                     gridVal = getGridVal newPos grid
                                 in  if newPos `isInside` grid && gridVal == '#'
-                                      then getNextPosition (x, y) D grid
-                                      else (newPos, R)
+                                        then getNextPosition (x, y) D grid
+                                    else (newPos, R)
 getNextPosition (x, y) D grid = let newPos = (x + 1, y)
                                     gridVal = getGridVal newPos grid
                                 in  if newPos `isInside` grid && gridVal == '#'
-                                      then getNextPosition (x, y) L grid
-                                      else (newPos, D)
+                                        then getNextPosition (x, y) L grid
+                                    else (newPos, D)
 getNextPosition (x, y) L grid = let newPos = (x, y - 1)
                                     gridVal = getGridVal newPos grid
                                 in  if newPos `isInside` grid && gridVal == '#'
-                                      then getNextPosition (x, y) U grid
-                                      else (newPos, L)
+                                        then getNextPosition (x, y) U grid
+                                    else (newPos, L)
 
 markVisited :: Position -> Char -> Grid -> Grid
 markVisited (x, y) c grid = let gridVal = getGridVal (x, y) grid
                             in  if gridVal == '#' || gridVal == '^' || gridVal == '>' || gridVal == 'v' || gridVal == '<'
-                                  then grid
-                                  else let row = grid !! x
-                                           newRow = take y row ++ [c] ++ drop (y + 1) row
-                                       in  take x grid ++ [newRow] ++ drop (x + 1) grid
+                                    then grid
+                                else let row = grid !! x
+                                         newRow = take y row ++ [c] ++ drop (y + 1) row
+                                     in  take x grid ++ [newRow] ++ drop (x + 1) grid
 
 visitGrid :: Position -> Direction -> Grid -> Grid
 visitGrid (x, y) direction grid = let newGrid = markVisited (x, y) 'X' grid
                                       (nextPosition, newDirection) = getNextPosition (x, y) direction grid
                                   in  if nextPosition `isInside` newGrid
-                                        then visitGrid nextPosition newDirection newGrid
-                                        else newGrid
+                                          then visitGrid nextPosition newDirection newGrid
+                                      else newGrid
 
 checkGridLoop :: Position -> Direction -> Grid -> Bool
 checkGridLoop startPosition direction grid = let (nextPosition, newDirection) = getNextPosition startPosition direction grid
