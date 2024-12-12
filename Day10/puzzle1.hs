@@ -1,4 +1,3 @@
-import Data.List (sort)
 import Data.Char (digitToInt)
 import Data.List.Split (chunksOf)
 import Data.Graph (graphFromEdges, path, vertices)
@@ -6,7 +5,7 @@ import Data.Graph (graphFromEdges, path, vertices)
 type Coords = (Int, Int)
 type V = (String, Int)
 
-getValue :: [[V]] -> (Int, Int) -> V
+getValue :: [[V]] -> Coords -> V
 getValue grid (i, j) = grid !! i !! j
 
 getEdges :: [[V]] -> Coords -> [Int]
@@ -21,7 +20,7 @@ listVertices grid = let l = length $ head grid
 main = do
     contents <- lines <$> readFile "day10.txt"
     let grid = listVertices contents
-        edgeCoords = sort [ (x, y) | x <- [0..length grid -1], y <- [0..length (head grid) - 1] ]
+        edgeCoords = [ (x, y) | x <- [0..length grid -1], y <- [0..length (head grid) - 1] ]
         edgeList = [ (x, y, z) | ((x, y), z) <- zip (concat grid) (map (getEdges grid) edgeCoords) ]
         (graph, nodeFromVertex, _) = graphFromEdges edgeList
         startList = [ x | (_, x, _) <- filter (\(x, _, _) -> x == "0") $ map nodeFromVertex $ vertices graph ]

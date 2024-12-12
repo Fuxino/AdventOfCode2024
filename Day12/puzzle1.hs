@@ -5,7 +5,7 @@ import Data.Foldable (toList)
 type Coords = (Int, Int)
 type V = (String, Int)
 
-getValue :: [[V]] -> (Int, Int) -> V
+getValue :: [[V]] -> Coords -> V
 getValue grid (i, j) = grid !! i !! j
 
 getEdges :: [[V]] -> Coords -> [Int]
@@ -17,7 +17,7 @@ listVertices :: [String] -> [[V]]
 listVertices grid = let l = length $ head grid
                     in  chunksOf l $ zip (map (:[]) (concat grid)) [0..]
 
-calculatePerimeter :: (Int -> (String, Int, [Int])) -> Tree Vertex -> Int
+calculatePerimeter :: (Vertex -> (String, Vertex, [Vertex])) -> Tree Vertex -> Int
 calculatePerimeter nodeFromVertex p = let edges = concat [ x | (_, _, x) <- toList $ fmap nodeFromVertex p ]
                                           area = 4 * length p
                                       in  area - length edges
