@@ -14,4 +14,4 @@ blink n m = blink (n - 1) $ M.fromListWith (+) $ concatMap blinkStone $ M.toList
 
 main = do
     contents <- M.fromListWith (+) . flip zip (repeat 1) . map read . words <$> readFile "day11.txt"
-    print . M.foldl (+) 0 $ blink 25 contents 
+    print . M.foldl (+) 0 $ blink 75 contents 
