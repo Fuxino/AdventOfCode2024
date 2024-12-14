@@ -1,0 +1,60 @@
+cabal-version:       2.2
+
+name:                adventofcode2024
+version:             0.1.0.0
+-- synopsis:
+-- description:
+homepage:            https://github.com/Fuxino/adventofcode2024#readme
+license:             MIT
+license-file:        LICENSE
+author:              Daniele Fucini
+maintainer:          dfucini@gmail.com
+copyright:           2024 Daniele Fucini
+category:            Web
+build-type:          Simple
+extra-source-files:  README.md
+
+executable adventofcode2024
+  hs-source-dirs:      src
+  main-is:             Main.hs
+  default-language:    Haskell2010
+  build-depends:       base >= 4.7 && < 5
+                     , split
+                     , containers
+                     , regex-tdfa
+                     , matrix
+  ghc-options:         -Wall
+                       -Wcompat
+                       -Widentities
+                       -Wincomplete-record-updates
+                       -Wincomplete-uni-patterns
+                       -Wmissing-export-lists
+                       -Wmissing-home-modules
+                       -Wpartial-fields
+                       -Wredundant-constraints
+  other-modules:
+    Day1.Puzzle1
+    Day1.Puzzle2
+    Day2.Puzzle1
+    Day2.Puzzle2
+    Day3.Puzzle1
+    Day3.Puzzle2
+    Day4.Puzzle1
+    Day4.Puzzle2
+    Day5.Puzzle1
+    Day5.Puzzle2
+    Day6.Puzzle1
+    Day6.Puzzle2
+    Day7.Puzzle1
+    Day7.Puzzle2
+    Day8.Puzzle1
+    Day8.Puzzle2
+    Day9.Puzzle1
+    Day9.Puzzle2
+    Day10.Puzzle1
+    Day11.Puzzle1
+    Day11.Puzzle2
+    Day12.Puzzle1
+    Day13.Puzzle1
+    Day13.Puzzle2
+    Day14.Puzzle1
