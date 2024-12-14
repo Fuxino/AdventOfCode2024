@@ -1,8 +1,9 @@
 import Data.Char (isDigit)
+import Data.List (uncons)
 import Data.List.Split (splitOn, chunksOf)
 import Data.Matrix (Matrix, fromLists, toList, rref, zero)
 import Data.Either (fromRight)
-import Data.Maybe (mapMaybe)
+import Data.Maybe (mapMaybe, fromJust)
 
 isAlmostInt :: (RealFrac a) => a -> Bool
 isAlmostInt x = let diff = x - fromInteger (round x)
@@ -13,7 +14,7 @@ multRes [x, y, z] = [x, y, z + 10000000000000]
 
 getMatrix :: (Num a, Read a) => String -> Matrix a
 getMatrix s = let nValues = map (map read . splitOn ",") . splitOn ":" . drop 1 $ filter (\x -> isDigit x || x == ',' || x == ':') s
-                  eq1 = multRes $ map head nValues
+                  eq1 = multRes $ map (fst . fromJust . uncons) nValues
                   eq2 = multRes $ map last nValues
               in  fromLists [eq1, eq2]
 

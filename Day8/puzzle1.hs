@@ -1,3 +1,5 @@
+import Data.List (uncons)
+import Data.Maybe (fromJust)
 import Control.Applicative
 import qualified Data.Set as Set
 
@@ -30,6 +32,6 @@ main = do
     contents <- lines <$> readFile "day8.txt"
     let antennas = getAntennas contents
         x = length contents
-        y = length $ head contents
+        y = length $ fst . fromJust $ uncons contents
         antinodes = Set.fromList $ concat [ getAntinodes a b x y | a <- antennas, b <- antennas, a /= b, frequency a == frequency b ] 
     print $ length antinodes

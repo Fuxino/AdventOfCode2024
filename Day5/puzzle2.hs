@@ -19,6 +19,6 @@ sortOnRules rules (x:xs) = sortOnRules rules beforeArray ++ [x] ++ sortOnRules r
 main = do
     contents <- map (splitOn "|") . lines <$> readFile "day5.txt"
     let rules = [ (read x, read y) | [x, y] <- takeWhile (/= [""]) contents ]
-        unsorted = filter (not . isSorted rules) . map (map read) $ concatMap (map (splitOn ",")) . tail $ dropWhile (/= [""]) contents
+        unsorted = filter (not . isSorted rules) . map (map read) $ concatMap (map (splitOn ",")) . drop 1 $ dropWhile (/= [""]) contents
         fixUnsorted = map (sortOnRules rules) unsorted
     print . sum $ map getMiddle fixUnsorted

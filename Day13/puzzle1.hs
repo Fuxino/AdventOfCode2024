@@ -1,16 +1,17 @@
 import Data.Char (isDigit)
+import Data.List (uncons)
 import Data.List.Split (splitOn, chunksOf)
 import Data.Matrix (Matrix, fromLists, toList, rref, zero)
 import Data.Either (fromRight)
-import Data.Maybe (mapMaybe)
+import Data.Maybe (mapMaybe, fromJust)
 
 isAlmostInt :: (RealFrac a) => a -> Bool
 isAlmostInt x = let diff = x - fromInteger (round x)
-                in  abs diff < 0.000001
+                in  abs diff < 0.001
 
 getMatrix :: (Read a) => String -> Matrix a
 getMatrix s = let nValues = map (map read . splitOn ",") . splitOn ":" . drop 1 $ filter (\x -> isDigit x || x == ',' || x == ':') s
-                  eq1 = map head nValues
+                  eq1 = map (fst . fromJust . uncons) nValues
                   eq2 = map last nValues
               in  fromLists [eq1, eq2]
 

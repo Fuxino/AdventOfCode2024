@@ -1,5 +1,5 @@
-import Data.List (elemIndex)
-import Data.Maybe (isJust, fromMaybe)
+import Data.List (elemIndex, uncons)
+import Data.Maybe (isJust, fromMaybe, fromJust)
 
 type Grid = [String]
 type Position = (Int, Int)
@@ -20,7 +20,7 @@ getGridVal :: Position -> Grid -> Char
 getGridVal (x, y) grid = (grid !! x) !! y
 
 isInside :: Position -> Grid -> Bool
-isInside (x, y) grid = x >= 0 && y >= 0 && x < length grid && y < length (head grid)
+isInside (x, y) grid = x >= 0 && y >= 0 && x < length grid && y < length (fst . fromJust $ uncons grid)
 
 getNextPosition :: Position -> Direction -> Grid -> (Position, Direction)
 getNextPosition (x, y) U grid = let newPos = (x - 1, y)
@@ -58,7 +58,7 @@ visitGrid (x, y) direction grid = let newGrid = markVisited (x, y) 'X' grid
 
 main = do
     contents <- lines <$> readFile "day6.txt"
-    let (x, y) = (\w x y z -> head $ filter ((>= 0) . fst) [w, x, y, z]) <$> getStartPosition 'v' <*> getStartPosition '^'
+    let (x, y) = (\w x y z -> fst . fromJust $ uncons $ filter ((>= 0) . fst) [w, x, y, z]) <$> getStartPosition 'v' <*> getStartPosition '^'
                                                                          <*> getStartPosition '<' <*> getStartPosition '>' $ contents
         direction = getDirection $ (contents !! x) !! y
     print . length . filter (== 'X') . concat $ visitGrid (x, y) direction contents
