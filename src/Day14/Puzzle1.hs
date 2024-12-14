@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
+
 module Day14.Puzzle1 (day14_1) where
 
 import Data.Char (isDigit)

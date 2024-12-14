@@ -7,11 +7,12 @@ type Grid = [String]
 type Position = (Int, Int)
 data Direction = U | R | D | L deriving Eq
 
-getDirection :: Char -> Direction
-getDirection '^' = U
-getDirection '>' = R
-getDirection 'v' = D
-getDirection '<' = L
+getDirection :: Char -> Maybe Direction
+getDirection '^' = Just U
+getDirection '>' = Just R
+getDirection 'v' = Just D
+getDirection '<' = Just L
+getDirection _ = Nothing
 
 printDirection :: Direction -> Char
 printDirection U = '^'
@@ -82,9 +83,9 @@ setGridObstacles startPosition grid = let positions = [ (x, y) | x <- [0..(lengt
 day6_2 :: IO ()
 day6_2 = do
     contents <- lines <$> readFile "input/day6.txt"
-    let (x, y) = (\w x y z -> fst . fromJust $ uncons $ filter ((>= 0) . fst) [w, x, y, z]) <$> getStartPosition 'v' <*> getStartPosition '^'
+    let (x, y) = (\a b c d -> fst . fromJust $ uncons $ filter ((>= 0) . fst) [a, b, c, d]) <$> getStartPosition 'v' <*> getStartPosition '^'
                                                                          <*> getStartPosition '<' <*> getStartPosition '>' $ contents
-        direction = getDirection $ (contents !! x) !! y
+        direction = fromJust . getDirection $ (contents !! x) !! y
         grid = visitGrid (x, y) direction contents
         gridObstacles = setGridObstacles (x, y) grid 
         loops = filter (checkGridLoop (x, y) direction) gridObstacles

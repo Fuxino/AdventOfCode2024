@@ -5,8 +5,8 @@ import Data.Ord
 
 isSafe :: [Int] -> Bool
 isSafe xs = (isAscending xs || isDescending xs) && maximum distances <= 3 && minimum distances >= 1
-            where isAscending xs  = xs == sort xs
-                  isDescending xs = xs == sortBy (comparing Down) xs
+            where isAscending x  = x == sort x
+                  isDescending x = x == sortBy (comparing Down) x
                   distances       = map abs $ zipWith (-) xs (drop 1 xs)
 
 removeLevel :: [Int] -> [[Int]]

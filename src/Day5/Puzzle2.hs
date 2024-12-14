@@ -1,10 +1,12 @@
+{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+
 module Day5.Puzzle2 (day5_2) where
 
 import Data.List ((\\))
 import Data.List.Split (splitOn)
 
 isSorted :: [(Int, Int)] -> [Int] -> Bool
-isSorted rules [x] = True
+isSorted _ [_] = True
 isSorted rules (x:xs) = let after = [ p | (p, n) <- rules, n == x ]
                         in  not (any (`elem` after) xs) && isSorted rules xs
 

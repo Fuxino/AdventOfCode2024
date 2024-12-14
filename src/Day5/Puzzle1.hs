@@ -1,9 +1,11 @@
+{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+
 module Day5.Puzzle1 (day5_1) where
 
 import Data.List.Split (splitOn)
 
 isSorted :: [(String, String)] -> [String] -> Bool
-isSorted rules [x] = True
+isSorted _ [_] = True
 isSorted rules (x:xs) = let after = [ p | (p, n) <- rules, n == x ]
                         in  not (any (`elem` after) xs) && isSorted rules xs
 
@@ -17,4 +19,4 @@ day5_1 = do
         updates = concatMap (map (splitOn ",")) . drop 1 $ dropWhile (/= [""]) contents
         sorted = filter (isSorted rules) updates
     putStrLn $ "Day 5, Puzzle 1 solution: "
-        ++ show (sum $ map (read . getMiddle) sorted)
+        ++ (show :: Int -> String) (sum $ map (read . getMiddle) sorted)

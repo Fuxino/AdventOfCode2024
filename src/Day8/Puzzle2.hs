@@ -13,7 +13,7 @@ data Antenna = Antenna { frequency :: Freq
                        } deriving (Show, Eq)
 
 readAntenna :: Freq -> Coords -> Antenna
-readAntenna frequency coordinates = Antenna {frequency=frequency, coordinates=coordinates}
+readAntenna freq coords = Antenna {frequency=freq, coordinates=coords}
 
 getAntennas :: [String] -> [Antenna]
 getAntennas grid = concat . getZipList $ getAntennasRow <$> ZipList [0..] <*> ZipList grid
@@ -24,7 +24,7 @@ isInside c x y = fst c >= 0 && fst c < x && snd c >= 0 && snd c < y
 
 generateCoords :: Coords -> Coords -> [Coords]
 generateCoords c offset = scanl shiftCoords c (repeat offset)
-                              where shiftCoords c = bimap (fst c +) (snd c +)
+                              where shiftCoords x = bimap (fst x +) (snd x +)
 
 getAntinodes :: Antenna -> Antenna -> Int -> Int -> [Coords]
 getAntinodes a b maxX maxY = let xa = fst $ coordinates a

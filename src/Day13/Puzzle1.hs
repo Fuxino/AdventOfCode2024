@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-type-defaults#-}
+
 module Day13.Puzzle1 (day13_1) where
 
 import Data.Char (isDigit)
@@ -26,6 +28,7 @@ solve eqSystem = let rowEchelonList = toList . fromRight (zero 1 1) $ rref eqSys
 
 cost :: [Int] -> Int
 cost [x, y] = 3 * x + y
+cost _ = 0
 
 day13_1 :: IO ()
 day13_1 = do

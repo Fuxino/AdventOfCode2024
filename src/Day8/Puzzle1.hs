@@ -12,7 +12,7 @@ data Antenna = Antenna { frequency :: Freq
                        } deriving (Show, Eq)
 
 readAntenna :: Freq -> Coords -> Antenna
-readAntenna frequency coordinates = Antenna {frequency=frequency, coordinates=coordinates}
+readAntenna freq coords = Antenna {frequency=freq, coordinates=coords}
 
 getAntennas :: [String] -> [Antenna]
 getAntennas grid = concat . getZipList $ getAntennasRow <$> ZipList [0..] <*> ZipList grid

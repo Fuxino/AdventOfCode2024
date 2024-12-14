@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
+
 module Day1.Puzzle1 (day1_1) where
 
 import Data.List (transpose, sort)

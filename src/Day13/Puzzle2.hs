@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-type-defaults#-}
+
 module Day13.Puzzle2 (day13_2) where
 
 import Data.Char (isDigit)
@@ -13,6 +15,7 @@ isAlmostInt x = let diff = x - fromInteger (round x)
 
 multRes :: (Num a) => [a] -> [a]
 multRes [x, y, z] = [x, y, z + 10000000000000]
+multRes xs = xs
 
 getMatrix :: (Num a, Read a) => String -> Matrix a
 getMatrix s = let nValues = map (map read . splitOn ",") . splitOn ":" . drop 1 $ filter (\x -> isDigit x || x == ',' || x == ':') s
@@ -29,6 +32,7 @@ solve eqSystem = let rowEchelonList = toList . fromRight (zero 1 1) $ rref eqSys
 
 cost :: [Int] -> Int
 cost [x, y] = 3 * x + y
+cost _ = 0
 
 day13_2 :: IO ()
 day13_2 = do

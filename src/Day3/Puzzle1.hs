@@ -1,7 +1,6 @@
 module Day3.Puzzle1 (day3_1) where
 
 import Data.List.Split (splitOn)
-import Data.Char (isDigit)
 import Text.Regex.TDFA (getAllTextMatches, (=~))
 
 sumMul :: [String] -> Int
