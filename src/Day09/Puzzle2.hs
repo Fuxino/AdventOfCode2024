@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 
-module Day9.Puzzle2 (day9_2) where
+module Day09.Puzzle2 (day09_2) where
 
 import Data.Char (digitToInt)
 import qualified Data.Foldable as F
@@ -62,8 +62,8 @@ tuplesToIntList disk =
 checksum :: [Int] -> Int
 checksum xs = sum $ zipWith (*) (maskMinus1 xs) [0 ..]
 
-day9_2 :: IO ()
-day9_2 = do
+day09_2 :: IO ()
+day09_2 = do
   contents <- init <$> readFile "input/day9.txt"
   let disk = parseDiskMap $ map digitToInt contents
       i = fromMaybe (-1) $ S.findIndexR (\x -> fst x /= -1) disk

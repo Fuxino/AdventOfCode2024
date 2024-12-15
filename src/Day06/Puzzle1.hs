@@ -1,4 +1,4 @@
-module Day6.Puzzle2 (day6_2) where
+module Day06.Puzzle1 (day06_1) where
 
 import Data.List (elemIndex, uncons)
 import Data.Maybe (fromJust, fromMaybe, isJust)
@@ -15,12 +15,6 @@ getDirection '>' = Just R
 getDirection 'v' = Just D
 getDirection '<' = Just L
 getDirection _ = Nothing
-
-printDirection :: Direction -> Char
-printDirection U = '^'
-printDirection R = '>'
-printDirection D = 'v'
-printDirection L = '<'
 
 getStartPosition :: Char -> Grid -> Position
 getStartPosition c grid = (x, y)
@@ -62,13 +56,9 @@ getNextPosition (x, y) L grid =
 
 markVisited :: Position -> Char -> Grid -> Grid
 markVisited (x, y) c grid =
-  let gridVal = getGridVal (x, y) grid
-   in if gridVal == '#' || gridVal == '^' || gridVal == '>' || gridVal == 'v' || gridVal == '<'
-        then grid
-        else
-          let row = grid !! x
-              newRow = take y row ++ [c] ++ drop (y + 1) row
-           in take x grid ++ [newRow] ++ drop (x + 1) grid
+  let row = grid !! x
+      newRow = take y row ++ [c] ++ drop (y + 1) row
+   in take x grid ++ [newRow] ++ drop (x + 1) grid
 
 visitGrid :: Position -> Direction -> Grid -> Grid
 visitGrid (x, y) direction grid =
@@ -78,23 +68,8 @@ visitGrid (x, y) direction grid =
         then visitGrid nextPosition newDirection newGrid
         else newGrid
 
-checkGridLoop :: Position -> Direction -> Grid -> Bool
-checkGridLoop startPosition direction grid =
-  let (nextPosition, newDirection) = getNextPosition startPosition direction grid
-      newDirectionChar = printDirection newDirection
-      newGrid = markVisited nextPosition newDirectionChar grid
-   in (nextPosition `isInside` grid)
-        && ( (getGridVal nextPosition grid == newDirectionChar)
-               || checkGridLoop nextPosition newDirection newGrid
-           )
-
-setGridObstacles :: Position -> Grid -> [Grid]
-setGridObstacles startPosition grid =
-  let positions = [(x, y) | x <- [0 .. (length grid - 1)], y <- [0 .. (length (fst . fromJust $ uncons grid) - 1)], (x, y) /= startPosition, getGridVal (x, y) grid == 'X']
-   in zipWith (`markVisited` '#') positions (replicate (length positions) grid)
-
-day6_2 :: IO ()
-day6_2 = do
+day06_1 :: IO ()
+day06_1 = do
   contents <- lines <$> readFile "input/day6.txt"
   let (x, y) =
         (\a b c d -> fst . fromJust $ uncons $ filter ((>= 0) . fst) [a, b, c, d])
@@ -104,7 +79,6 @@ day6_2 = do
           <*> getStartPosition '>'
           $ contents
       direction = fromJust . getDirection $ (contents !! x) !! y
-      grid = visitGrid (x, y) direction contents
-      gridObstacles = setGridObstacles (x, y) grid
-      loops = filter (checkGridLoop (x, y) direction) gridObstacles
-  putStrLn $ "Day 6, Puzzle 2 solution: " ++ show (length loops)
+  putStrLn $
+    "Day 6, Puzzle 1 solution: "
+      ++ show (length . concatMap (filter (== 'X')) $ visitGrid (x, y) direction contents)

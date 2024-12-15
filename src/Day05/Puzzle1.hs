@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 
-module Day5.Puzzle1 (day5_1) where
+module Day05.Puzzle1 (day05_1) where
 
 import Data.List.Split (splitOn)
 
@@ -13,8 +13,8 @@ isSorted rules (x : xs) =
 getMiddle :: [String] -> String
 getMiddle xs = xs !! (length xs `div` 2)
 
-day5_1 :: IO ()
-day5_1 = do
+day05_1 :: IO ()
+day05_1 = do
   contents <- map (splitOn "|") . lines <$> readFile "input/day5.txt"
   let rules = [(x, y) | [x, y] <- takeWhile (/= [""]) contents]
       updates = concatMap (map (splitOn ",")) . drop 1 $ dropWhile (/= [""]) contents

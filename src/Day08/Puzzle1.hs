@@ -1,10 +1,9 @@
-module Day8.Puzzle2 (day8_2) where
+module Day08.Puzzle1 (day08_1) where
 
 import Control.Applicative
-import Data.Bifunctor (bimap)
 import Data.List (uncons)
 import Data.Maybe (fromJust)
-import Data.Set (fromList)
+import qualified Data.Set as Set
 
 type Freq = Char
 
@@ -27,31 +26,21 @@ getAntennas grid = concat . getZipList $ getAntennasRow <$> ZipList [0 ..] <*> Z
 isInside :: Coords -> Int -> Int -> Bool
 isInside c x y = fst c >= 0 && fst c < x && snd c >= 0 && snd c < y
 
-generateCoords :: Coords -> Coords -> [Coords]
-generateCoords c offset = scanl shiftCoords c (repeat offset)
-  where
-    shiftCoords x = bimap (fst x +) (snd x +)
-
 getAntinodes :: Antenna -> Antenna -> Int -> Int -> [Coords]
 getAntinodes a b maxX maxY =
   let xa = fst $ coordinates a
       ya = snd $ coordinates a
       xb = fst $ coordinates b
       yb = snd $ coordinates b
-      distX = xa - xb
-      distY = ya - yb
    in if frequency a /= frequency b || coordinates a == coordinates b
         then []
-        else
-          filter (\c -> isInside c maxX maxY) [(2 * xa - xb, 2 * ya - yb), (2 * xb - xa, 2 * yb - ya)]
-            ++ takeWhile (\c -> isInside c maxX maxY) (generateCoords (coordinates a) (distX, distY))
-            ++ takeWhile (\c -> isInside c maxX maxY) (generateCoords (coordinates b) (-distX, -distY))
+        else filter (\c -> isInside c maxX maxY) [(2 * xa - xb, 2 * ya - yb), (2 * xb - xa, 2 * yb - ya)]
 
-day8_2 :: IO ()
-day8_2 = do
+day08_1 :: IO ()
+day08_1 = do
   contents <- lines <$> readFile "input/day8.txt"
   let antennas = getAntennas contents
       x = length contents
       y = length $ fst . fromJust $ uncons contents
-      antinodes = fromList $ concat [getAntinodes a b x y | a <- antennas, b <- antennas, a /= b, frequency a == frequency b]
-  putStrLn $ "Day 8, Puzzle 2 solution: " ++ show (length antinodes)
+      antinodes = Set.fromList $ concat [getAntinodes a b x y | a <- antennas, b <- antennas, a /= b, frequency a == frequency b]
+  putStrLn $ "Day 8, Puzzle 1 solution: " ++ show (length antinodes)

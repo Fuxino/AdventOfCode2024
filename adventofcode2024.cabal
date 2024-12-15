@@ -33,24 +33,24 @@ executable adventofcode2024
                        -Wpartial-fields
                        -Wredundant-constraints
   other-modules:
-    Day1.Puzzle1
-    Day1.Puzzle2
-    Day2.Puzzle1
-    Day2.Puzzle2
-    Day3.Puzzle1
-    Day3.Puzzle2
-    Day4.Puzzle1
-    Day4.Puzzle2
-    Day5.Puzzle1
-    Day5.Puzzle2
-    Day6.Puzzle1
-    Day6.Puzzle2
-    Day7.Puzzle1
-    Day7.Puzzle2
-    Day8.Puzzle1
-    Day8.Puzzle2
-    Day9.Puzzle1
-    Day9.Puzzle2
+    Day01.Puzzle1
+    Day01.Puzzle2
+    Day02.Puzzle1
+    Day02.Puzzle2
+    Day03.Puzzle1
+    Day03.Puzzle2
+    Day04.Puzzle1
+    Day04.Puzzle2
+    Day05.Puzzle1
+    Day05.Puzzle2
+    Day06.Puzzle1
+    Day06.Puzzle2
+    Day07.Puzzle1
+    Day07.Puzzle2
+    Day08.Puzzle1
+    Day08.Puzzle2
+    Day09.Puzzle1
+    Day09.Puzzle2
     Day10.Puzzle1
     Day11.Puzzle1
     Day11.Puzzle2

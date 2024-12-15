@@ -1,4 +1,4 @@
-module Day3.Puzzle2 (day3_2) where
+module Day03.Puzzle2 (day03_2) where
 
 import Data.List (isPrefixOf)
 import Data.List.Split (split, splitOn, startsWith)
@@ -12,8 +12,8 @@ sumMul xs =
 filterDonts :: [String] -> String
 filterDonts = concat . concatMap (filter (not . isPrefixOf "don't()") . split (startsWith "do()"))
 
-day3_2 :: IO ()
-day3_2 = do
+day03_2 :: IO ()
+day03_2 = do
   contents <- split (startsWith "don't()") <$> readFile "input/day3.txt"
   let mults = getAllTextMatches (filterDonts contents =~ "mul\\([0-9]+,[0-9]+\\)") :: [String]
   putStrLn $

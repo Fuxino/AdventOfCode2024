@@ -1,4 +1,4 @@
-module Day4.Puzzle2 (day4_2) where
+module Day04.Puzzle2 (day04_2) where
 
 import Data.List (isPrefixOf, tails, transpose)
 
@@ -27,8 +27,8 @@ submatricesVert n matrix@(_ : xxs) = submatrix matrix ++ submatricesVert n xxs
   where
     submatrix m = [take n $ map (take n) m]
 
-day4_2 :: IO ()
-day4_2 = do
+day04_2 :: IO ()
+day04_2 = do
   contents <- lines <$> readFile "input/day4.txt"
   let xmas = length . concatMap (filter (\x -> countOccurrences "MAS" x == 2) . submatricesVert 3) . transpose $ map tails contents
   putStrLn $ "Day 4, Puzzle 2 solution: " ++ show xmas

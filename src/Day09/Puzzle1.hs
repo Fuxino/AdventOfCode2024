@@ -1,4 +1,4 @@
-module Day9.Puzzle1 (day9_1) where
+module Day09.Puzzle1 (day09_1) where
 
 import Control.Applicative
 import Data.Char (digitToInt)
@@ -25,8 +25,8 @@ compact xs
 checksum :: [Int] -> Int
 checksum xs = sum $ zipWith (*) xs [0 ..]
 
-day9_1 :: IO ()
-day9_1 = do
+day09_1 :: IO ()
+day09_1 = do
   contents <- init <$> readFile "input/day9.txt"
   let diskMap = map digitToInt contents
   putStrLn $

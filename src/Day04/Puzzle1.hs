@@ -1,4 +1,4 @@
-module Day4.Puzzle1 (day4_1) where
+module Day04.Puzzle1 (day04_1) where
 
 import Data.List (isPrefixOf, transpose)
 
@@ -26,8 +26,8 @@ countOccurrences word text =
         then 1 + countOccurrences' word rest
         else countOccurrences' w rest
 
-day4_1 :: IO ()
-day4_1 = do
+day04_1 :: IO ()
+day04_1 = do
   contents <- lines <$> readFile "input/day4.txt"
   putStrLn $
     "Day 4, Puzzle 1 solution: "

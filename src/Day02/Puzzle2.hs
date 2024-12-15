@@ -1,4 +1,4 @@
-module Day2.Puzzle2 (day2_2) where
+module Day02.Puzzle2 (day02_2) where
 
 import Data.List (inits, sort, sortBy, tails)
 import Data.Ord
@@ -16,8 +16,8 @@ removeLevel xs = zipWith (++) ys zs
     ys = map init $ drop 1 (inits xs)
     zs = map (drop 1) $ init (tails xs)
 
-day2_2 :: IO ()
-day2_2 = do
+day02_2 :: IO ()
+day02_2 = do
   contents <- lines <$> readFile "input/day2.txt"
   let reports = map read . words <$> contents
   putStrLn $
