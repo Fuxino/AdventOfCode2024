@@ -23,6 +23,7 @@ executable adventofcode2024
                      , containers
                      , regex-tdfa
                      , matrix
+                     , mtl
   ghc-options:         -Wall
                        -Wcompat
                        -Widentities
@@ -60,3 +61,4 @@ executable adventofcode2024
     Day14.Puzzle1
     Day14.Puzzle2
     Day15.Puzzle1
+    Day17.Puzzle1
