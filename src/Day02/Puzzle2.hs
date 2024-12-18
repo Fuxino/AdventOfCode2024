@@ -1,6 +1,7 @@
 module Day02.Puzzle2 (day02_2) where
 
-import Data.List (inits, sort, sortBy, tails)
+import Control.Monad
+import Data.List (sort, sortBy)
 import Data.Ord
 
 isSafe :: [Int] -> Bool
@@ -11,10 +12,9 @@ isSafe xs = (isAscending xs || isDescending xs) && maximum distances <= 3 && min
     distances = map abs $ zipWith (-) xs (drop 1 xs)
 
 removeLevel :: [Int] -> [[Int]]
-removeLevel xs = zipWith (++) ys zs
+removeLevel xs = filter (\x -> length x == l) $ filterM (const [True, False]) xs
   where
-    ys = map init $ drop 1 (inits xs)
-    zs = map (drop 1) $ init (tails xs)
+    l = length xs - 1
 
 day02_2 :: IO ()
 day02_2 = do
