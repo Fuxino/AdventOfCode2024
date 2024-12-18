@@ -122,4 +122,5 @@ day17_1 = do
       registers = map (read . filter isDigit) r
       prog = map (read . filter isDigit) $ splitOn "," p
       computer = Computer {registerA = fst . fromJust $ uncons registers, registerB = registers !! 1, registerC = registers !! 2, pointer = 0, program = prog, output = ""}
+  putStr "Day 17, Puzzle 1 solution: "
   print . drop 1 . output $ execState runProgram computer

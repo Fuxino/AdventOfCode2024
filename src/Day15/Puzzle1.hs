@@ -205,4 +205,4 @@ day15_1 = do
       directions = map (fromJust . getDirection) $ concat d
       startPos = getStartPosition '@' grid
       finalGrid = visitGrid startPos directions grid
-  print . sum $ boxCoords finalGrid
+  putStrLn $ "Day 15, Puzzle 1 solution: " ++ show (sum $ boxCoords finalGrid)
