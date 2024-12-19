@@ -1,15 +1,14 @@
 module Day18.Puzzle1 (day18_1) where
 
 import qualified Data.Array as A
-import Data.Function (on)
-import Data.List (minimumBy)
+import qualified Data.HashMap.Strict as M
 import Data.List.Split (splitOn)
-import qualified Data.Map.Strict as M
-import qualified Data.Set as S
+import Data.Maybe (fromJust)
+import qualified Data.PSQueue as PQ
 
 type Coords = (Int, Int)
 
-newtype Graph = Graph {edges :: M.Map Coords [Coords]} deriving (Show)
+newtype Graph = Graph {edges :: M.HashMap Coords [Coords]} deriving (Show)
 
 data Distance a = Dist a | Infinity deriving (Eq)
 
@@ -28,38 +27,43 @@ addDistance (Dist x) (Dist y) = Dist (x + y)
 addDistance _ _ = Infinity
 
 data DijkstraState = DijkstraState
-  { unvisited :: S.Set Coords,
-    distances :: M.Map Coords (Distance Int)
+  { unvisited :: PQ.PSQ Coords (Distance Int),
+    distances :: M.HashMap Coords (Distance Int)
   }
-  deriving (Show)
 
-initDijkstraState :: Coords -> Graph -> DijkstraState
-initDijkstraState start g =
-  let s =
-        DijkstraState
-          { unvisited = S.fromList . M.keys $ edges g,
-            distances = M.fromList $ zip (M.keys $ edges g) (repeat Infinity)
-          }
-   in s {distances = M.adjust (const (Dist 0)) start (distances s)}
+updateDistances :: M.HashMap Coords (Distance Int) -> [Coords] -> Distance Int -> M.HashMap Coords (Distance Int)
+updateDistances dists [] _ = dists
+updateDistances dists (n : nodes) startD =
+  updateDistances (M.adjust (const startD) n dists) nodes startD
 
-updateDistances :: Graph -> M.Map Coords (Distance Int) -> [Coords] -> Distance Int -> M.Map Coords (Distance Int)
-updateDistances _ dists [] _ = dists
-updateDistances graph dists (n : nodes) startD =
-  updateDistances graph (M.adjust (const (addDistance startD (Dist 1))) n dists) nodes startD
+visit :: PQ.PSQ Coords (Distance Int) -> Coords -> [Coords] -> Distance Int -> PQ.PSQ Coords (Distance Int)
+visit us node [] _ = PQ.delete node us
+visit us node (e : es) dist = visit (PQ.adjust (const dist) e us) node es dist
 
-findShortestPath :: Graph -> DijkstraState -> Coords -> Coords -> Distance Int
-findShortestPath graph state start end
-  | start == end = distances state M.! end
-  | distances state M.! start == Infinity = Infinity
-  | otherwise =
-      let newState =
-            state
-              { unvisited = S.delete start (unvisited state),
-                distances = updateDistances graph (distances state) (edges graph M.! start) (distances state M.! start)
-              }
-          nodes = S.toList $ unvisited newState
-          next = fst $ minimumBy (compare `on` snd) [(n, distances newState M.! n) | n <- nodes]
-       in findShortestPath graph newState next end
+visitNode :: DijkstraState -> Graph -> Coords -> Distance Int -> DijkstraState
+visitNode state graph node d =
+  let es = edges graph M.! node
+      ds = updateDistances (distances state) es d
+      us = visit (unvisited state) node es d
+   in state {unvisited = us, distances = ds}
+
+findShortestPath :: Graph -> Coords -> Coords -> Distance Int
+findShortestPath graph start end =
+  let nodesDist = (start PQ.:-> Dist 0) : [k PQ.:-> Infinity | k <- M.keys $ edges graph, k /= start]
+      dists = (start, Dist 0) : [(k, Infinity) | k <- M.keys $ edges graph, k /= start]
+      initialState = DijkstraState {unvisited = PQ.fromList nodesDist, distances = M.fromList dists}
+   in dijkstra initialState
+  where
+    dijkstra s =
+      let nd = fromJust $ PQ.findMin (unvisited s)
+          n = PQ.key nd
+          d = PQ.prio nd
+       in if n == end
+            then d
+            else
+              if d == Infinity
+                then Infinity
+                else dijkstra $ visitNode s graph n (addDistance d (Dist 1))
 
 adjacent :: A.Array Coords Char -> Coords -> Coords -> [Coords]
 adjacent array (i, j) (maxI, maxJ) = [(a, b) | (a, b) <- [(i, j + 1), (i, j - 1), (i + 1, j), (i - 1, j)], a >= 0, b >= 0, a <= maxI, b <= maxJ, array A.! (a, b) /= '#']
@@ -74,5 +78,4 @@ day18_1 = do
       coords = take 1024 [(read x, read y) | (x : y : _) <- contents]
       memory' = corruptMemory memory coords
       memoryGraph = Graph {edges = M.fromList [(k, adjacent memory' k (70, 70)) | k <- A.indices memory']}
-      state = initDijkstraState (0, 0) memoryGraph
-  putStrLn $ "Day 18, Puzzle 1 solution: " ++ show (findShortestPath memoryGraph state (0, 0) (70, 70))
+  putStrLn $ "Day 18, Puzzle 1 solution: " ++ show (findShortestPath memoryGraph (0, 0) (70, 70))
