@@ -30,6 +30,7 @@ import Day15.Puzzle1
 import Day17.Puzzle1
 import Day18.Puzzle1
 import Day18.Puzzle2
+import Day19.Puzzle1
 import System.Environment (getArgs)
 
 main :: IO ()
@@ -66,4 +67,5 @@ main = do
     "17" : "1" : _ -> day17_1
     "18" : "1" : _ -> day18_1
     "18" : "2" : _ -> day18_2
+    "19" : "1" : _ -> day19_1
     _ -> error "Not implemented"
