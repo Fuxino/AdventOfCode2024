@@ -4,7 +4,7 @@ import Data.Array (Array, indices, listArray, (!), (//))
 import Data.Function (on)
 import Data.List (minimumBy)
 import Data.List.Split (splitOn)
-import qualified Data.Map as M
+import qualified Data.Map.Strict as M
 import qualified Data.Set as S
 
 type Coords = (Int, Int)
@@ -48,11 +48,10 @@ initDijkstraState start g =
           }
    in s {distances = M.adjust (const (Dist 0)) start (distances s)}
 
-updateDistances :: Graph -> M.Map Coords (Distance Int) -> Coords -> M.Map Coords (Distance Int)
-updateDistances graph dists coords =
-  let nodes = edges graph M.! coords
-      dist = dists M.! coords
-   in M.mapWithKey (\k d -> if k `elem` nodes && d > dist then addDistance dist (Dist 1) else d) dists
+updateDistances :: Graph -> M.Map Coords (Distance Int) -> [Coords] -> Distance Int -> M.Map Coords (Distance Int)
+updateDistances _ dists [] _ = dists
+updateDistances graph dists (n:nodes) startD =
+    updateDistances graph (M.adjust (const (addDistance startD (Dist 1))) n dists) nodes startD
 
 findShortestPath :: Graph -> DijkstraState -> Coords -> Coords -> Distance Int
 findShortestPath graph state start end
@@ -63,7 +62,7 @@ findShortestPath graph state start end
       let newState =
             state
               { unvisited = S.delete start (unvisited state),
-                distances = updateDistances graph (distances state) start
+                distances = updateDistances graph (distances state) (edges graph M.! start) (distances state M.! start)
               }
           nodes = S.toList $ unvisited newState
           next = fst $ minimumBy (compare `on` snd) [(n, distances newState M.! n) | n <- nodes]
