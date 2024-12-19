@@ -75,11 +75,11 @@ corruptMemory :: A.Array Coords Char -> [Coords] -> A.Array Coords Char
 corruptMemory = foldl (\a b -> a A.// [(b, '#')])
 
 findFirstBlocker :: A.Array Coords Char -> [Coords] -> Coords -> Coords -> Coords
-findFirstBlocker memory (c:cs) start end =
-    let memory' = corruptMemory memory [c]
-        memoryGraph = Graph {edges = M.fromList [(k, adjacent memory' k (70, 70)) | k <- A.indices memory']}
-     in  if findShortestPath memoryGraph start end == Infinity
-            then c
+findFirstBlocker memory (c : cs) start end =
+  let memory' = corruptMemory memory [c]
+      memoryGraph = Graph {edges = M.fromList [(k, adjacent memory' k (70, 70)) | k <- A.indices memory']}
+   in if findShortestPath memoryGraph start end == Infinity
+        then c
         else findFirstBlocker memory' cs start end
 
 day18_2 :: IO ()
