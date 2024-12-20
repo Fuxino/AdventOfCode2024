@@ -1,4 +1,8 @@
-module Day08.Puzzle2 (day08_2) where
+module Day08
+  ( day08_1,
+    day08_2,
+  )
+where
 
 import Control.Applicative
 import Data.Bifunctor (bimap)
@@ -38,6 +42,16 @@ getAntinodes a b maxX maxY =
       ya = snd $ coordinates a
       xb = fst $ coordinates b
       yb = snd $ coordinates b
+   in if frequency a /= frequency b || coordinates a == coordinates b
+        then []
+        else filter (\c -> isInside c maxX maxY) [(2 * xa - xb, 2 * ya - yb), (2 * xb - xa, 2 * yb - ya)]
+
+getAntinodes' :: Antenna -> Antenna -> Int -> Int -> [Coords]
+getAntinodes' a b maxX maxY =
+  let xa = fst $ coordinates a
+      ya = snd $ coordinates a
+      xb = fst $ coordinates b
+      yb = snd $ coordinates b
       distX = xa - xb
       distY = ya - yb
    in if frequency a /= frequency b || coordinates a == coordinates b
@@ -47,11 +61,20 @@ getAntinodes a b maxX maxY =
             ++ takeWhile (\c -> isInside c maxX maxY) (generateCoords (coordinates a) (distX, distY))
             ++ takeWhile (\c -> isInside c maxX maxY) (generateCoords (coordinates b) (-distX, -distY))
 
+day08_1 :: IO ()
+day08_1 = do
+  contents <- lines <$> readFile "input/day8.txt"
+  let antennas = getAntennas contents
+      x = length contents
+      y = length $ fst . fromJust $ uncons contents
+      antinodes = fromList $ concat [getAntinodes a b x y | a <- antennas, b <- antennas, a /= b, frequency a == frequency b]
+  putStrLn $ "Day 8, Puzzle 1 solution: " ++ show (length antinodes)
+
 day08_2 :: IO ()
 day08_2 = do
   contents <- lines <$> readFile "input/day8.txt"
   let antennas = getAntennas contents
       x = length contents
       y = length $ fst . fromJust $ uncons contents
-      antinodes = fromList $ concat [getAntinodes a b x y | a <- antennas, b <- antennas, a /= b, frequency a == frequency b]
+      antinodes = fromList $ concat [getAntinodes' a b x y | a <- antennas, b <- antennas, a /= b, frequency a == frequency b]
   putStrLn $ "Day 8, Puzzle 2 solution: " ++ show (length antinodes)

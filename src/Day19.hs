@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
 
-module Day19.Puzzle1 (day19_1) where
+module Day19 (day19_1) where
 
 import Control.Monad (guard)
 import Data.List (isPrefixOf)

@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
 
-module Day17.Puzzle1 (day17_1) where
+module Day17 (day17_1) where
 
 import Control.Monad.State
 import Data.Bits

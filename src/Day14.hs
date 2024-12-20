@@ -1,8 +1,13 @@
 {-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
 
-module Day14.Puzzle1 (day14_1) where
+module Day14
+  ( day14_1,
+    day14_2,
+  )
+where
 
 import Data.Char (isDigit)
+import Data.List (nub)
 import Data.List.Split (splitOn)
 
 type Position = (Int, Int)
@@ -25,6 +30,12 @@ moveRobot n r =
       (vx, vy) = snd r
    in moveRobot (n - 1) (((px + vx) `mod` 101, (py + vy) `mod` 103), (vx, vy))
 
+moveRobot' :: Robot -> Robot
+moveRobot' r =
+  let (px, py) = fst r
+      (vx, vy) = snd r
+   in (((px + vx) `mod` 101, (py + vy) `mod` 103), (vx, vy))
+
 quadrant :: Robot -> Int
 quadrant r
   | fst p `elem` [0 .. 49]
@@ -43,6 +54,14 @@ quadrant r
   where
     p = fst r
 
+findChristmasTree :: Int -> [Robot] -> Int
+findChristmasTree n rs =
+  let rs' = map moveRobot' rs
+      positions = map fst rs'
+   in if positions == nub positions
+        then n
+        else findChristmasTree (n + 1) rs'
+
 day14_1 :: IO ()
 day14_1 = do
   contents <- lines <$> readFile "input/day14.txt"
@@ -55,3 +74,11 @@ day14_1 = do
   putStrLn $
     "Day 14, Puzzle 1 solution: "
       ++ show (firstQ * secondQ * thirdQ * fourthQ)
+
+day14_2 :: IO ()
+day14_2 = do
+  contents <- lines <$> readFile "input/day14.txt"
+  let robots = map readRobot contents
+  putStrLn $
+    "Day 14, Puzzle 2 solution: "
+      ++ show (findChristmasTree 1 robots)

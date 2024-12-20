@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
 
-module Day15.Puzzle1 (day15_1) where
+module Day15 (day15_1) where
 
 import Data.List (elemIndex, elemIndices, transpose, uncons)
 import Data.List.Split (splitOn)

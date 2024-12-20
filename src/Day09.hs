@@ -1,20 +1,40 @@
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 
-module Day09.Puzzle2 (day09_2) where
+module Day09
+  ( day09_1,
+    day09_2,
+  )
+where
 
+import Control.Applicative
 import Data.Char (digitToInt)
 import qualified Data.Foldable as F
 import Data.Function (on)
 import Data.List (groupBy, intersperse)
-import Data.Maybe (fromMaybe)
+import Data.Maybe (fromJust, fromMaybe)
 import qualified Data.Sequence as S
 
 type DiskElem = (Int, Int)
 
-parseDiskMap :: [Int] -> S.Seq DiskElem
+parseDiskMap :: [Int] -> S.Seq Int
 parseDiskMap xs =
   let values = intersperse (-1) [0 ..]
+   in S.fromList . concat . getZipList $ replicate <$> ZipList xs <*> ZipList values
+
+parseDiskMap' :: [Int] -> S.Seq DiskElem
+parseDiskMap' xs =
+  let values = intersperse (-1) [0 ..]
    in S.fromList $ zip values xs
+
+compact :: S.Seq Int -> S.Seq Int
+compact xs
+  | fileIndex == -1 = xs
+  | otherwise = S.filter (/= -1) $ startDisk S.>< (compact . S.insertAt 0 fileVal . S.deleteAt 0 $ S.deleteAt fileIndex endDisk)
+  where
+    spaceIndex = fromJust $ S.elemIndexL (-1) xs
+    (startDisk, endDisk) = S.splitAt spaceIndex xs
+    fileIndex = fromMaybe (-1) (S.findIndexR (/= -1) endDisk)
+    fileVal = S.index endDisk fileIndex
 
 isSpaceEnough :: Int -> DiskElem -> Bool
 isSpaceEnough n (-1, l) = l >= n
@@ -60,12 +80,23 @@ tuplesToIntList disk =
    in concatMap (\x -> replicate (snd x) (fst x)) listDisk
 
 checksum :: [Int] -> Int
-checksum xs = sum $ zipWith (*) (maskMinus1 xs) [0 ..]
+checksum xs = sum $ zipWith (*) xs [0 ..]
+
+checksum' :: [Int] -> Int
+checksum' xs = sum $ zipWith (*) (maskMinus1 xs) [0 ..]
+
+day09_1 :: IO ()
+day09_1 = do
+  contents <- init <$> readFile "input/day9.txt"
+  let diskMap = map digitToInt contents
+  putStrLn $
+    "Day 9, Puzzle 1 solution: "
+      ++ show (checksum . F.toList . compact $ parseDiskMap diskMap)
 
 day09_2 :: IO ()
 day09_2 = do
   contents <- init <$> readFile "input/day9.txt"
-  let disk = parseDiskMap $ map digitToInt contents
+  let disk = parseDiskMap' $ map digitToInt contents
       i = fromMaybe (-1) $ S.findIndexR (\x -> fst x /= -1) disk
       compactedDisk = tuplesToIntList $ S.filter (\x -> snd x > 0) $ compactFiles i disk
-  putStrLn $ "Day 9, Puzzle 2 solution: " ++ show (checksum compactedDisk)
+  putStrLn $ "Day 9, Puzzle 2 solution: " ++ show (checksum' compactedDisk)

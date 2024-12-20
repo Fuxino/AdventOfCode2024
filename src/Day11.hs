@@ -1,4 +1,8 @@
-module Day11.Puzzle1 (day11_1) where
+module Day11
+  ( day11_1,
+    day11_2,
+  )
+where
 
 import qualified Data.Map.Strict as M
 
@@ -21,3 +25,10 @@ day11_1 = do
   putStrLn $
     "Day 11, Puzzle 1 solution: "
       ++ show (M.foldl (+) 0 $ blink 25 contents)
+
+day11_2 :: IO ()
+day11_2 = do
+  contents <- M.fromListWith (+) . flip zip (repeat 1) . map read . words <$> readFile "input/day11.txt"
+  putStrLn $
+    "Day 11, Puzzle 2 solution: "
+      ++ show (M.foldl (+) 0 $ blink 75 contents)

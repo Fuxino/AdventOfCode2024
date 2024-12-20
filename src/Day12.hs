@@ -1,4 +1,4 @@
-module Day12.Puzzle1 (day12_1) where
+module Day12 (day12_1) where
 
 import Data.Foldable (toList)
 import Data.Graph (Tree, Vertex, graphFromEdges, scc)

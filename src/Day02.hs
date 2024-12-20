@@ -1,4 +1,8 @@
-module Day02.Puzzle2 (day02_2) where
+module Day02
+  ( day02_1,
+    day02_2,
+  )
+where
 
 import Control.Monad
 import Data.List (sort, sortBy)
@@ -15,6 +19,14 @@ removeLevel :: [Int] -> [[Int]]
 removeLevel xs = filter (\x -> length x == l) $ filterM (const [True, False]) xs
   where
     l = length xs - 1
+
+day02_1 :: IO ()
+day02_1 = do
+  contents <- lines <$> readFile "input/day2.txt"
+  let reports = map read . words <$> contents
+  putStrLn $
+    "Day 2, Puzzle 1 solution: "
+      ++ show (length $ filter isSafe reports)
 
 day02_2 :: IO ()
 day02_2 = do
