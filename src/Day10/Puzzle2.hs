@@ -1,4 +1,4 @@
-module Day10.Puzzle1 (day10_1) where
+module Day10.Puzzle2 (day10_2) where
 
 import qualified Data.Array as A
 import Data.Char (digitToInt)
@@ -19,11 +19,12 @@ findAllPaths graph start end path = do
     then return path'
     else findAllPaths graph node end path'
 
-day10_1 :: IO ()
-day10_1 = do
+day10_2 :: IO ()
+day10_2 = do
   contents <- lines <$> readFile "input/day10.txt"
   let trailMap = A.listArray ((0, 0), (52, 52)) $ map digitToInt $ concat contents
       trailGraph = Graph {edges = M.fromList [(k, adjacent trailMap k (52, 52)) | k <- A.indices trailMap]}
       startList = map fst . filter (\(_, y) -> y == 0) $ A.assocs trailMap
       endList = map fst . filter (\(_, y) -> y == 9) $ A.assocs trailMap
-  putStrLn $ "Day 10, Puzzle 1 solution: " ++ show (length $ filter (not . null) [findAllPaths trailGraph x y [x] | x <- startList, y <- endList])
+      paths = concat $ filter (not . null) [findAllPaths trailGraph x y [x] | x <- startList, y <- endList]
+  putStrLn $ "Day 10, Puzzle 2 solution: " ++ show (length paths)

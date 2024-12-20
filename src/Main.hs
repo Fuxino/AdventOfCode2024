@@ -19,6 +19,7 @@ import Day08.Puzzle2
 import Day09.Puzzle1
 import Day09.Puzzle2
 import Day10.Puzzle1
+import Day10.Puzzle2
 import Day11.Puzzle1
 import Day11.Puzzle2
 import Day12.Puzzle1
@@ -56,6 +57,7 @@ main = do
     "9" : "1" : _ -> day09_1
     "9" : "2" : _ -> day09_2
     "10" : "1" : _ -> day10_1
+    "10" : "2" : _ -> day10_2
     "11" : "1" : _ -> day11_1
     "11" : "2" : _ -> day11_2
     "12" : "1" : _ -> day12_1
