@@ -7,10 +7,9 @@ where
 import qualified Data.Array as A
 import Data.Char (digitToInt)
 import qualified Data.HashMap.Strict as M
+import Graph
 
 type Coords = (Int, Int)
-
-newtype Graph a = Graph {edges :: M.HashMap a [a]} deriving (Show)
 
 adjacent :: A.Array Coords Int -> Coords -> Coords -> [Coords]
 adjacent array (i, j) (maxI, maxJ) = [(a, b) | (a, b) <- [(i, j + 1), (i, j - 1), (i + 1, j), (i - 1, j)], a >= 0, b >= 0, a <= maxI, b <= maxJ, array A.! (a, b) - array A.! (i, j) == 1]
