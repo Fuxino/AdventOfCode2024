@@ -13,7 +13,7 @@ getDesignCombinations design towels cur = do
 
   let design' = drop (length towel) design
   if null design'
-    then return $ drop 1 cur
+    then return $ drop 1 cur ++ "," ++ towel
     else getDesignCombinations design' towels (cur ++ "," ++ towel)
 
 isDesignPossible :: String -> [String] -> Bool
