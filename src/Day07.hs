@@ -35,22 +35,24 @@ isSolvable' cur (result, x : y : ys) =
     || isSolvable' ((cur `concatInt` x) * y) (result, ys)
     || isSolvable' ((cur `concatInt` x) `concatInt` y) (result, ys)
 
-day07_1 :: IO ()
-day07_1 = do
+parseInput :: IO [(Int, [Int])]
+parseInput = do
   [x, y] <- transpose . map (splitOn ":") . lines <$> readFile "input/day7.txt"
   let results = map read x
       values = map read <$> map words y
       equations = zip results values
+  return equations
+
+day07_1 :: IO ()
+day07_1 = do
+  equations <- parseInput
   putStrLn $
     "Day 7, Puzzle 1 solution: "
       ++ show (sum . map fst $ filter (isSolvable 0) equations)
 
 day07_2 :: IO ()
 day07_2 = do
-  [x, y] <- transpose . map (splitOn ":") . lines <$> readFile "input/day7.txt"
-  let results = map read x
-      values = map read <$> map words y
-      equations = zip results values
+  equations <- parseInput
   putStrLn $
     "Day 7, Puzzle 2 solution: "
       ++ show (sum . map fst $ filter (isSolvable' 0) equations)

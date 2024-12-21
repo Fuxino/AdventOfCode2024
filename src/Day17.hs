@@ -121,23 +121,25 @@ checkIfCreatesCopy c =
   let o = map read . filter (not . null) . splitOn "," . output $ execState runProgram c
    in o == program c
 
-day17_1 :: IO ()
-day17_1 = do
+parseInput :: IO ([Integer], [Int])
+parseInput = do
   contents <- lines <$> readFile "input/day17.txt"
   let [r, [p]] = splitOn [""] contents
       registers = map (read . filter isDigit) r
       prog = map (read . filter isDigit) $ splitOn "," p
-      computer = Computer {registerA = fst . fromJust $ uncons registers, registerB = registers !! 1, registerC = registers !! 2, pointer = 0, program = prog, output = ""}
+  return (registers, prog)
+
+day17_1 :: IO ()
+day17_1 = do
+  (registers, prog) <- parseInput
+  let computer = Computer {registerA = fst . fromJust $ uncons registers, registerB = registers !! 1, registerC = registers !! 2, pointer = 0, program = prog, output = ""}
   putStr "Day 17, Puzzle 1 solution: "
   print . drop 1 . output $ execState runProgram computer
 
 day17_2 :: IO ()
 day17_2 = do
-  contents <- lines <$> readFile "input/day17.txt"
-  let [r, [p]] = splitOn [""] contents
-      registers = map (read . filter isDigit) r
-      prog = map (read . filter isDigit) $ splitOn "," p
-      computer = Computer {registerA = 0, registerB = registers !! 1, registerC = registers !! 2, pointer = 0, program = prog, output = ""}
+  (registers, prog) <- parseInput
+  let computer = Computer {registerA = 0, registerB = registers !! 1, registerC = registers !! 2, pointer = 0, program = prog, output = ""}
       regA = [805464 * 2 ^ 27 ..] -- Threshold derived empirically, a better threshold must be possible because this is very slow, but got the correct answer.
   putStrLn $
     "Day 17, Puzzle 2 solution: "

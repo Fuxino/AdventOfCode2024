@@ -20,18 +20,22 @@ removeLevel xs = filter (\x -> length x == l) $ filterM (const [True, False]) xs
   where
     l = length xs - 1
 
-day02_1 :: IO ()
-day02_1 = do
+parseInput :: IO [[Int]]
+parseInput = do
   contents <- lines <$> readFile "input/day2.txt"
   let reports = map read . words <$> contents
+  return reports
+
+day02_1 :: IO ()
+day02_1 = do
+  reports <- parseInput
   putStrLn $
     "Day 2, Puzzle 1 solution: "
       ++ show (length $ filter isSafe reports)
 
 day02_2 :: IO ()
 day02_2 = do
-  contents <- lines <$> readFile "input/day2.txt"
-  let reports = map read . words <$> contents
+  reports <- parseInput
   putStrLn $
     "Day 2, Puzzle 2 solution: "
       ++ show (length . filter (any isSafe) $ map removeLevel reports)

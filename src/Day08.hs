@@ -61,20 +61,22 @@ getAntinodes' a b maxX maxY =
             ++ takeWhile (\c -> isInside c maxX maxY) (generateCoords (coordinates a) (distX, distY))
             ++ takeWhile (\c -> isInside c maxX maxY) (generateCoords (coordinates b) (-distX, -distY))
 
-day08_1 :: IO ()
-day08_1 = do
+parseInput :: IO (Int, Int, [Antenna])
+parseInput = do
   contents <- lines <$> readFile "input/day8.txt"
   let antennas = getAntennas contents
       x = length contents
       y = length $ fst . fromJust $ uncons contents
-      antinodes = fromList $ concat [getAntinodes a b x y | a <- antennas, b <- antennas, a /= b, frequency a == frequency b]
+  return (x, y, antennas)
+
+day08_1 :: IO ()
+day08_1 = do
+  (x, y, antennas) <- parseInput
+  let antinodes = fromList $ concat [getAntinodes a b x y | a <- antennas, b <- antennas, a /= b, frequency a == frequency b]
   putStrLn $ "Day 8, Puzzle 1 solution: " ++ show (length antinodes)
 
 day08_2 :: IO ()
 day08_2 = do
-  contents <- lines <$> readFile "input/day8.txt"
-  let antennas = getAntennas contents
-      x = length contents
-      y = length $ fst . fromJust $ uncons contents
-      antinodes = fromList $ concat [getAntinodes' a b x y | a <- antennas, b <- antennas, a /= b, frequency a == frequency b]
+  (x, y, antennas) <- parseInput
+  let antinodes = fromList $ concat [getAntinodes' a b x y | a <- antennas, b <- antennas, a /= b, frequency a == frequency b]
   putStrLn $ "Day 8, Puzzle 2 solution: " ++ show (length antinodes)

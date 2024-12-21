@@ -27,20 +27,23 @@ findFirstBlocker memory (c : cs) start end =
         then c
         else findFirstBlocker memory' cs start end
 
+getCorruptedMemoryMap :: [[String]] -> A.Array Coords Char
+getCorruptedMemoryMap fallingBytes =
+  let memory = A.listArray ((0, 0), (70, 70)) $ replicate 5041 '.'
+      bytesCoords = take 1024 [(read x, read y) | (x : y : _) <- fallingBytes]
+      corruptedMemory = corruptMemory memory bytesCoords
+  in corruptedMemory
+
 day18_1 :: IO ()
 day18_1 = do
   contents <- map (splitOn ",") . lines <$> readFile "input/day18.txt"
-  let memory = A.listArray ((0, 0), (70, 70)) $ replicate 5041 '.'
-      coords = take 1024 [(read x, read y) | (x : y : _) <- contents]
-      memory' = corruptMemory memory coords
-      memoryGraph = Graph {edges = M.fromList [(k, adjacent memory' k (70, 70)) | k <- A.indices memory']}
+  let corruptedMemory = getCorruptedMemoryMap contents
+      memoryGraph = Graph {edges = M.fromList [(k, adjacent corruptedMemory k (70, 70)) | k <- A.indices corruptedMemory]}
   putStrLn $ "Day 18, Puzzle 1 solution: " ++ show (findShortestPath memoryGraph (0, 0) (70, 70))
 
 day18_2 :: IO ()
 day18_2 = do
   contents <- map (splitOn ",") . lines <$> readFile "input/day18.txt"
-  let memory = A.listArray ((0, 0), (70, 70)) $ replicate 5041 '.'
-      coords = take 1024 [(read x, read y) | (x : y : _) <- contents]
-      coords' = drop 1024 [(read x, read y) | (x : y : _) <- contents]
-      memory' = corruptMemory memory coords
-  putStrLn $ "Day 18, Puzzle 2 solution: " ++ show (findFirstBlocker memory' coords' (0, 0) (70, 70))
+  let corruptedMemory = getCorruptedMemoryMap contents
+      fallingBytesCoords = drop 1024 [(read x, read y) | (x : y : _) <- contents]
+  putStrLn $ "Day 18, Puzzle 2 solution: " ++ show (findFirstBlocker corruptedMemory fallingBytesCoords (0, 0) (70, 70))

@@ -62,11 +62,16 @@ findChristmasTree n rs =
         then n
         else findChristmasTree (n + 1) rs'
 
-day14_1 :: IO ()
-day14_1 = do
+parseInput :: IO [Robot]
+parseInput = do
   contents <- lines <$> readFile "input/day14.txt"
   let robots = map readRobot contents
-      robots' = map (moveRobot 100) robots
+  return robots
+
+day14_1 :: IO ()
+day14_1 = do
+  robots <- parseInput
+  let robots' = map (moveRobot 100) robots
       firstQ = length $ filter (\r -> quadrant r == 0) robots'
       secondQ = length $ filter (\r -> quadrant r == 1) robots'
       thirdQ = length $ filter (\r -> quadrant r == 2) robots'
@@ -77,8 +82,7 @@ day14_1 = do
 
 day14_2 :: IO ()
 day14_2 = do
-  contents <- lines <$> readFile "input/day14.txt"
-  let robots = map readRobot contents
+  robots <- parseInput
   putStrLn $
     "Day 14, Puzzle 2 solution: "
       ++ show (findChristmasTree 1 robots)

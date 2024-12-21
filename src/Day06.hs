@@ -103,33 +103,30 @@ setGridObstacles startPosition grid =
   let positions = [(x, y) | x <- [0 .. (length grid - 1)], y <- [0 .. (length (fst . fromJust $ uncons grid) - 1)], (x, y) /= startPosition, getGridVal (x, y) grid == 'X']
    in zipWith (`markVisited` '#') positions (replicate (length positions) grid)
 
-day06_1 :: IO ()
-day06_1 = do
+parseInput :: IO (Int, Int, Direction, [String])
+parseInput = do
   contents <- lines <$> readFile "input/day6.txt"
   let (x, y) =
-        (\a b c d -> fst . fromJust $ uncons $ filter ((>= 0) . fst) [a, b, c, d])
+        (\a b c d -> fst . fromJust . uncons $ filter ((>= 0) . fst) [a, b, c, d])
           <$> getStartPosition 'v'
           <*> getStartPosition '^'
           <*> getStartPosition '<'
           <*> getStartPosition '>'
           $ contents
       direction = fromJust . getDirection $ (contents !! x) !! y
+  return (x, y, direction, contents)
+
+day06_1 :: IO ()
+day06_1 = do
+  (x, y, direction, grid) <- parseInput
   putStrLn $
     "Day 6, Puzzle 1 solution: "
-      ++ show (1 + (length . concatMap (filter (== 'X')) $ visitGrid (x, y) direction contents))
+      ++ show (1 + (length . concatMap (filter (== 'X')) $ visitGrid (x, y) direction grid))
 
 day06_2 :: IO ()
 day06_2 = do
-  contents <- lines <$> readFile "input/day6.txt"
-  let (x, y) =
-        (\a b c d -> fst . fromJust $ uncons $ filter ((>= 0) . fst) [a, b, c, d])
-          <$> getStartPosition 'v'
-          <*> getStartPosition '^'
-          <*> getStartPosition '<'
-          <*> getStartPosition '>'
-          $ contents
-      direction = fromJust . getDirection $ (contents !! x) !! y
-      grid = visitGrid (x, y) direction contents
+  (x, y, direction, initialGrid) <- parseInput
+  let grid = visitGrid (x, y) direction initialGrid
       gridObstacles = setGridObstacles (x, y) grid
       loops = filter (checkGridLoop (x, y) direction) gridObstacles
   putStrLn $ "Day 6, Puzzle 2 solution: " ++ show (length loops)
