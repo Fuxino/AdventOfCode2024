@@ -1,6 +1,7 @@
 {-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
+{-# OPTIONS_GHC -Wno-type-defaults #-}
 
-module Day17 (day17_1) where
+module Day17 (day17_1, day17_2) where
 
 import Control.Monad.State
 import Data.Bits
@@ -115,6 +116,11 @@ runProgram = do
         _ -> return ()
       runProgram
 
+checkIfCreatesCopy :: Computer -> Bool
+checkIfCreatesCopy c =
+  let o = map read . filter (not . null) . splitOn "," . output $ execState runProgram c
+   in o == program c
+
 day17_1 :: IO ()
 day17_1 = do
   contents <- lines <$> readFile "input/day17.txt"
@@ -124,3 +130,15 @@ day17_1 = do
       computer = Computer {registerA = fst . fromJust $ uncons registers, registerB = registers !! 1, registerC = registers !! 2, pointer = 0, program = prog, output = ""}
   putStr "Day 17, Puzzle 1 solution: "
   print . drop 1 . output $ execState runProgram computer
+
+day17_2 :: IO ()
+day17_2 = do
+  contents <- lines <$> readFile "input/day17.txt"
+  let [r, [p]] = splitOn [""] contents
+      registers = map (read . filter isDigit) r
+      prog = map (read . filter isDigit) $ splitOn "," p
+      computer = Computer {registerA = 0, registerB = registers !! 1, registerC = registers !! 2, pointer = 0, program = prog, output = ""}
+      regA = [805464 * 2 ^ 27 ..] -- Threshold derived empirically, a better threshold must be possible because this is very slow, but got the correct answer.
+  putStrLn $
+    "Day 17, Puzzle 2 solution: "
+      ++ show (fst . fromJust . uncons $ dropWhile (\x -> not (checkIfCreatesCopy computer {registerA = x})) regA)
