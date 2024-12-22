@@ -1,5 +1,4 @@
 {-# LANGUAGE DeriveGeneric #-}
-{-# OPTIONS_GHC -Wno-incomplete-patterns -Wno-type-defaults #-}
 
 module Day16 (day16_1) where
 
