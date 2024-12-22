@@ -15,6 +15,7 @@ import Day12 (day12_1)
 import Day13 (day13_1, day13_2)
 import Day14 (day14_1, day14_2)
 import Day15 (day15_1)
+import Day16 (day16_1)
 import Day17 (day17_1, day17_2)
 import Day18 (day18_1, day18_2)
 import Day19 (day19_1)
@@ -92,6 +93,7 @@ main = do
       day14_1
       day14_2
     "15" : "1" : _ -> day15_1
+    "16" : "1" : _ -> day16_1
     "17" : "1" : _ -> day17_1
     "17" : "2" : _ -> day17_2
     "17" : _ -> do

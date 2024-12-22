@@ -13,8 +13,8 @@ import Graph
 
 type Coords = (Int, Int)
 
-adjacent :: A.Array Coords Char -> Coords -> Coords -> [Coords]
-adjacent array (i, j) (maxI, maxJ) = [(a, b) | (a, b) <- [(i, j + 1), (i, j - 1), (i + 1, j), (i - 1, j)], a >= 0, b >= 0, a <= maxI, b <= maxJ, array A.! (a, b) /= '#']
+adjacent :: (Num a) => A.Array Coords Char -> Coords -> Coords -> [(Coords, Distance a)]
+adjacent array (i, j) (maxI, maxJ) = [((a, b), Dist 1) | (a, b) <- [(i, j + 1), (i, j - 1), (i + 1, j), (i - 1, j)], a >= 0, b >= 0, a <= maxI, b <= maxJ, array A.! (a, b) /= '#']
 
 corruptMemory :: A.Array Coords Char -> [Coords] -> A.Array Coords Char
 corruptMemory = foldl (\a b -> a A.// [(b, '#')])
@@ -32,7 +32,7 @@ getCorruptedMemoryMap fallingBytes =
   let memory = A.listArray ((0, 0), (70, 70)) $ replicate 5041 '.'
       bytesCoords = take 1024 [(read x, read y) | (x : y : _) <- fallingBytes]
       corruptedMemory = corruptMemory memory bytesCoords
-  in corruptedMemory
+   in corruptedMemory
 
 day18_1 :: IO ()
 day18_1 = do

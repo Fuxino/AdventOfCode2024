@@ -11,29 +11,29 @@ import Graph
 
 type Coords = (Int, Int)
 
-adjacent :: A.Array Coords Int -> Coords -> Coords -> [Coords]
-adjacent array (i, j) (maxI, maxJ) = [(a, b) | (a, b) <- [(i, j + 1), (i, j - 1), (i + 1, j), (i - 1, j)], a >= 0, b >= 0, a <= maxI, b <= maxJ, array A.! (a, b) - array A.! (i, j) == 1]
+adjacent :: (Num a) => A.Array Coords Int -> Coords -> Coords -> [(Coords, Distance a)]
+adjacent array (i, j) (maxI, maxJ) = [((a, b), Dist 1) | (a, b) <- [(i, j + 1), (i, j - 1), (i + 1, j), (i - 1, j)], a >= 0, b >= 0, a <= maxI, b <= maxJ, array A.! (a, b) - array A.! (i, j) == 1]
 
-findAllPaths :: Graph Coords -> Coords -> Coords -> [Coords] -> [[Coords]]
+findAllPaths :: Graph Coords Int -> Coords -> Coords -> [Coords] -> [[Coords]]
 findAllPaths graph start end path = do
-  node <- edges graph M.! start
+  node <- fst <$> edges graph M.! start
   let path' = path ++ [node]
   if node == end
     then return path'
     else findAllPaths graph node end path'
+
+getTrailGraph :: A.Array Coords Int -> (Graph Coords Int, [Coords], [Coords])
+getTrailGraph trailMap =
+  let trailGraph = Graph {edges = M.fromList [(k, adjacent trailMap k (52, 52)) | k <- A.indices trailMap]}
+      startList = map fst . filter (\(_, y) -> y == 0) $ A.assocs trailMap
+      endList = map fst . filter (\(_, y) -> y == 9) $ A.assocs trailMap
+   in (trailGraph, startList, endList)
 
 parseInput :: IO (A.Array (Int, Int) Int)
 parseInput = do
   contents <- lines <$> readFile "input/day10.txt"
   let trailMap = A.listArray ((0, 0), (52, 52)) . map digitToInt $ concat contents
   return trailMap
-
-getTrailGraph :: A.Array Coords Int -> (Graph Coords, [Coords], [Coords])
-getTrailGraph trailMap =
-  let trailGraph = Graph {edges = M.fromList [(k, adjacent trailMap k (52, 52)) | k <- A.indices trailMap]}
-      startList = map fst . filter (\(_, y) -> y == 0) $ A.assocs trailMap
-      endList = map fst . filter (\(_, y) -> y == 9) $ A.assocs trailMap
-   in (trailGraph, startList, endList)
 
 day10_1 :: IO ()
 day10_1 = do

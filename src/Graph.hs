@@ -10,8 +10,6 @@ import Data.Hashable (Hashable)
 import Data.Maybe (fromJust)
 import qualified Data.PSQueue as PQ
 
-newtype Graph a = Graph {edges :: M.HashMap a [a]} deriving (Show)
-
 data Distance a = Dist a | Infinity deriving (Eq)
 
 instance (Ord a) => Ord (Distance a) where
@@ -24,6 +22,8 @@ instance (Show a) => Show (Distance a) where
   show Infinity = "Infinity"
   show (Dist x) = show x
 
+newtype Graph a b = Graph {edges :: M.HashMap a [(a, Distance b)]} deriving (Show)
+
 addDistance :: (Num a) => Distance a -> Distance a -> Distance a
 addDistance (Dist x) (Dist y) = Dist (x + y)
 addDistance _ _ = Infinity
@@ -33,23 +33,26 @@ data DijkstraState a b = DijkstraState
     distances :: M.HashMap a (Distance b)
   }
 
-updateDistances :: (Hashable a) => M.HashMap a (Distance b) -> [a] -> Distance b -> M.HashMap a (Distance b)
+updateDistances :: (Hashable a, Num b) => M.HashMap a (Distance b) -> [(a, Distance b)] -> Distance b -> M.HashMap a (Distance b)
 updateDistances dists [] _ = dists
 updateDistances dists (n : nodes) startD =
-  updateDistances (M.adjust (const startD) n dists) nodes startD
+  let newD = addDistance startD (snd n)
+   in updateDistances (M.adjust (const newD) (fst n) dists) nodes startD
 
-visit :: (Ord a, Ord b) => PQ.PSQ a (Distance b) -> a -> [a] -> Distance b -> PQ.PSQ a (Distance b)
+visit :: (Ord a, Num b, Ord b) => PQ.PSQ a (Distance b) -> a -> [(a, Distance b)] -> Distance b -> PQ.PSQ a (Distance b)
 visit us node [] _ = PQ.delete node us
-visit us node (e : es) dist = visit (PQ.adjust (const dist) e us) node es dist
+visit us node (e : es) startD =
+  let newD = addDistance startD (snd e)
+   in visit (PQ.adjust (const newD) (fst e) us) node es startD
 
-visitNode :: (Hashable a, Ord a, Ord b) => DijkstraState a b -> Graph a -> a -> Distance b -> DijkstraState a b
+visitNode :: (Hashable a, Ord a, Num b, Ord b) => DijkstraState a b -> Graph a b -> a -> Distance b -> DijkstraState a b
 visitNode state graph node d =
   let es = edges graph M.! node
       ds = updateDistances (distances state) es d
       us = visit (unvisited state) node es d
    in state {unvisited = us, distances = ds}
 
-findShortestPath :: (Hashable a, Ord a, Ord b, Num b) => Graph a -> a -> a -> Distance b
+findShortestPath :: (Hashable a, Ord a, Ord b, Num b) => Graph a b -> a -> a -> Distance b
 findShortestPath graph start end =
   let nodesDist = (start PQ.:-> Dist 0) : [k PQ.:-> Infinity | k <- M.keys $ edges graph, k /= start]
       dists = (start, Dist 0) : [(k, Infinity) | k <- M.keys $ edges graph, k /= start]
@@ -65,4 +68,4 @@ findShortestPath graph start end =
             else
               if d == Infinity
                 then Infinity
-                else dijkstra $ visitNode s graph n (addDistance d (Dist 1))
+                else dijkstra $ visitNode s graph n d
