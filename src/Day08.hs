@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-x-partial #-}
+
 module Day08
   ( day08_1,
     day08_2,
@@ -6,8 +8,6 @@ where
 
 import Control.Applicative
 import Data.Bifunctor (bimap)
-import Data.List (uncons)
-import Data.Maybe (fromJust)
 import Data.Set (fromList)
 
 type Freq = Char
@@ -66,7 +66,7 @@ parseInput = do
   contents <- lines <$> readFile "input/day8.txt"
   let antennas = getAntennas contents
       x = length contents
-      y = length $ fst . fromJust $ uncons contents
+      y = length $ head contents
   return (x, y, antennas)
 
 day08_1 :: IO ()

@@ -1,14 +1,11 @@
-{-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
-{-# OPTIONS_GHC -Wno-type-defaults #-}
+{-# OPTIONS_GHC -Wno-incomplete-uni-patterns -Wno-type-defaults -Wno-x-partial #-}
 
 module Day17 (day17_1, day17_2) where
 
 import Control.Monad.State
 import Data.Bits
 import Data.Char (isDigit)
-import Data.List (uncons)
 import Data.List.Split (splitOn)
-import Data.Maybe (fromJust)
 
 type Program = [Int]
 
@@ -132,7 +129,7 @@ parseInput = do
 day17_1 :: IO ()
 day17_1 = do
   (registers, prog) <- parseInput
-  let computer = Computer {registerA = fst . fromJust $ uncons registers, registerB = registers !! 1, registerC = registers !! 2, pointer = 0, program = prog, output = ""}
+  let computer = Computer {registerA = head registers, registerB = registers !! 1, registerC = registers !! 2, pointer = 0, program = prog, output = ""}
   putStr "Day 17, Puzzle 1 solution: "
   print . drop 1 . output $ execState runProgram computer
 
@@ -143,4 +140,4 @@ day17_2 = do
       regA = [805464 * 2 ^ 27 ..] -- Threshold derived empirically, a better threshold must be possible because this is very slow, but got the correct answer.
   putStrLn $
     "Day 17, Puzzle 2 solution: "
-      ++ show (fst . fromJust . uncons $ dropWhile (\x -> not (checkIfCreatesCopy computer {registerA = x})) regA)
+      ++ show (head $ dropWhile (\x -> not (checkIfCreatesCopy computer {registerA = x})) regA)

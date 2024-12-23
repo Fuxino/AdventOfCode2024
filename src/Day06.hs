@@ -1,10 +1,12 @@
+{-# OPTIONS_GHC -Wno-x-partial #-}
+
 module Day06
   ( day06_1,
     day06_2,
   )
 where
 
-import Data.List (elemIndex, uncons)
+import Data.List (elemIndex)
 import Data.Maybe (fromJust, fromMaybe, isJust)
 
 type Grid = [String]
@@ -36,7 +38,7 @@ getGridVal :: Position -> Grid -> Char
 getGridVal (x, y) grid = (grid !! x) !! y
 
 isInside :: Position -> Grid -> Bool
-isInside (x, y) grid = x >= 0 && y >= 0 && x < length grid && y < length (fst . fromJust $ uncons grid)
+isInside (x, y) grid = x >= 0 && y >= 0 && x < length grid && y < length (head grid)
 
 getNextPosition :: Position -> Direction -> Grid -> (Position, Direction)
 getNextPosition (x, y) U grid =
@@ -64,12 +66,6 @@ getNextPosition (x, y) L grid =
         then getNextPosition (x, y) U grid
         else (newPos, L)
 
--- markVisited :: Position -> Char -> Grid -> Grid
--- markVisited (x, y) c grid =
---  let row = grid !! x
---      newRow = take y row ++ [c] ++ drop (y + 1) row
---   in take x grid ++ [newRow] ++ drop (x + 1) grid
---
 markVisited :: Position -> Char -> Grid -> Grid
 markVisited (x, y) c grid =
   let gridVal = getGridVal (x, y) grid
@@ -100,14 +96,14 @@ checkGridLoop startPosition direction grid =
 
 setGridObstacles :: Position -> Grid -> [Grid]
 setGridObstacles startPosition grid =
-  let positions = [(x, y) | x <- [0 .. (length grid - 1)], y <- [0 .. (length (fst . fromJust $ uncons grid) - 1)], (x, y) /= startPosition, getGridVal (x, y) grid == 'X']
+  let positions = [(x, y) | x <- [0 .. (length grid - 1)], y <- [0 .. (length (head grid) - 1)], (x, y) /= startPosition, getGridVal (x, y) grid == 'X']
    in zipWith (`markVisited` '#') positions (replicate (length positions) grid)
 
 parseInput :: IO (Int, Int, Direction, [String])
 parseInput = do
   contents <- lines <$> readFile "input/day6.txt"
   let (x, y) =
-        (\a b c d -> fst . fromJust . uncons $ filter ((>= 0) . fst) [a, b, c, d])
+        (\a b c d -> head $ filter ((>= 0) . fst) [a, b, c, d])
           <$> getStartPosition 'v'
           <*> getStartPosition '^'
           <*> getStartPosition '<'

@@ -1,8 +1,8 @@
-{-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
+{-# OPTIONS_GHC -Wno-incomplete-uni-patterns -Wno-x-partial #-}
 
 module Day15 (day15_1) where
 
-import Data.List (elemIndex, elemIndices, transpose, uncons)
+import Data.List (elemIndex, elemIndices, transpose)
 import Data.List.Split (splitOn)
 import Data.Maybe (fromJust, fromMaybe, isJust)
 
@@ -70,8 +70,8 @@ shiftUp p1 grid =
             then markPosition p1 '.' (markPosition p2 '@' (markPosition p3 'O' grid))
             else
               let column = reverse $ transpose grid !! snd p1
-                  nextDot = fst . fromMaybe (-1, []) $ uncons $ dropWhile (< length column - fst p1) $ elemIndices '.' column
-                  nextHash = fst . fromMaybe (-1, []) $ uncons $ dropWhile (< length column - fst p1) $ elemIndices '#' column
+                  nextDot = head $ dropWhile (< length column - fst p1) $ elemIndices '.' column
+                  nextHash = head $ dropWhile (< length column - fst p1) $ elemIndices '#' column
                in if nextDot == -1 || nextDot > nextHash
                     then grid
                     else markPosition p1 '.' (markPosition p2 '@' (markPosition (length column - 1 - nextDot, snd p1) 'O' grid))
@@ -88,8 +88,8 @@ shiftRight p1 grid =
             then markPosition p1 '.' (markPosition p2 '@' (markPosition p3 'O' grid))
             else
               let row = grid !! fst p1
-                  nextDot = fst . fromMaybe (-1, []) $ uncons $ dropWhile (< snd p1) $ elemIndices '.' row
-                  nextHash = fst . fromMaybe (-1, []) $ uncons $ dropWhile (< snd p1) $ elemIndices '#' row
+                  nextDot = head $ dropWhile (< snd p1) $ elemIndices '.' row
+                  nextHash = head $ dropWhile (< snd p1) $ elemIndices '#' row
                in if nextDot == -1 || nextDot > nextHash
                     then grid
                     else markPosition p1 '.' (markPosition p2 '@' (markPosition (fst p1, nextDot) 'O' grid))
@@ -106,8 +106,8 @@ shiftDown p1 grid =
             then markPosition p1 '.' (markPosition p2 '@' (markPosition p3 'O' grid))
             else
               let column = transpose grid !! snd p1
-                  nextDot = fst . fromMaybe (-1, []) $ uncons $ dropWhile (< fst p1) $ elemIndices '.' column
-                  nextHash = fst . fromMaybe (-1, []) $ uncons $ dropWhile (< fst p1) $ elemIndices '#' column
+                  nextDot = head $ dropWhile (< fst p1) $ elemIndices '.' column
+                  nextHash = head $ dropWhile (< fst p1) $ elemIndices '#' column
                in if nextDot == -1 || nextDot > nextHash
                     then grid
                     else markPosition p1 '.' (markPosition p2 '@' (markPosition (nextDot, snd p1) 'O' grid))
@@ -124,8 +124,8 @@ shiftLeft p1 grid =
             then markPosition p1 '.' (markPosition p2 '@' (markPosition p3 'O' grid))
             else
               let row = reverse $ grid !! fst p1
-                  nextDot = fst . fromMaybe (-1, []) $ uncons $ dropWhile (< length row - snd p1) $ elemIndices '.' row
-                  nextHash = fst . fromMaybe (-1, []) $ uncons $ dropWhile (< length row - snd p1) $ elemIndices '#' row
+                  nextDot = head $ dropWhile (< length row - snd p1) $ elemIndices '.' row
+                  nextHash = head $ dropWhile (< length row - snd p1) $ elemIndices '#' row
                in if nextDot == -1 || nextDot > nextHash
                     then grid
                     else markPosition p1 '.' (markPosition p2 '@' (markPosition (fst p1, length row - 1 - nextDot) 'O' grid))
@@ -195,7 +195,7 @@ gpsCoords (x, y) = 100 * x + y
 
 boxCoords :: Grid -> [Int]
 boxCoords grid =
-  let coords = [(x, y) | x <- [0 .. length grid - 1], y <- [0 .. length (fst . fromJust $ uncons grid) - 1], getGridVal (x, y) grid == 'O']
+  let coords = [(x, y) | x <- [0 .. length grid - 1], y <- [0 .. length (head grid) - 1], getGridVal (x, y) grid == 'O']
    in map gpsCoords coords
 
 day15_1 :: IO ()

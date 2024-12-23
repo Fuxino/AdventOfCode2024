@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
+{-# OPTIONS_GHC -Wno-incomplete-uni-patterns -Wno-x-partial #-}
 
 module Day01
   ( day01_1,
@@ -6,15 +6,14 @@ module Day01
   )
 where
 
-import Data.List (group, sort, transpose, uncons)
-import Data.Maybe (fromJust)
+import Data.List (group, sort, transpose)
 
 listDistance :: [Int] -> [Int] -> Int
 listDistance xs ys = sum $ map abs $ zipWith (-) (sort xs) (sort ys)
 
 similarityScore :: [Int] -> [Int] -> Int
 similarityScore xs ys =
-  let elemsY = [(fst . fromJust $ uncons y, length y) | y <- (group . sort) ys]
+  let elemsY = [(head y, length y) | y <- (group . sort) ys]
    in sum [x * snd y | x <- xs, y <- elemsY, x == fst y]
 
 parseInput :: IO [[Int]]

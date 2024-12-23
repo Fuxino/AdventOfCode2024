@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC -Wno-type-defaults #-}
+{-# OPTIONS_GHC -Wno-type-defaults -Wno-x-partial #-}
 
 module Day13
   ( day13_1,
@@ -8,10 +8,9 @@ where
 
 import Data.Char (isDigit)
 import Data.Either (fromRight)
-import Data.List (uncons)
 import Data.List.Split (chunksOf, splitOn)
 import Data.Matrix (Matrix, fromLists, rref, toList, zero)
-import Data.Maybe (fromJust, mapMaybe)
+import Data.Maybe (mapMaybe)
 
 isAlmostInt :: (RealFrac a) => a -> Bool
 isAlmostInt x =
@@ -25,14 +24,14 @@ multRes xs = xs
 getMatrix :: (Read a) => String -> Matrix a
 getMatrix s =
   let nValues = map (map read . splitOn ",") . splitOn ":" . drop 1 $ filter (\x -> isDigit x || x == ',' || x == ':') s
-      eq1 = map (fst . fromJust . uncons) nValues
+      eq1 = map head nValues
       eq2 = map last nValues
    in fromLists [eq1, eq2]
 
 getMatrix' :: (Num a, Read a) => String -> Matrix a
 getMatrix' s =
   let nValues = map (map read . splitOn ",") . splitOn ":" . drop 1 $ filter (\x -> isDigit x || x == ',' || x == ':') s
-      eq1 = multRes $ map (fst . fromJust . uncons) nValues
+      eq1 = multRes $ map head nValues
       eq2 = multRes $ map last nValues
    in fromLists [eq1, eq2]
 
