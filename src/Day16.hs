@@ -50,5 +50,4 @@ day16_1 = do
   (mazeMap, nRow, nCol) <- parseInput
   let (mazeGraph, start, end) = getMazeGraph mazeMap nRow nCol
       shortestPaths = [findShortestPath mazeGraph start e | e <- end]
-  --  putStrLn $ "Day 16, Puzzle 1 solution: " ++ show (findShortestPath mazeGraph start end)
   putStrLn $ "Day 16, Puzzle 1 solution: " ++ show (minimum shortestPaths)
