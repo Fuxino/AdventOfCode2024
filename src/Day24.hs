@@ -26,9 +26,9 @@ toDecimal n = sum $ zipWith (*) n (iterate (*2) 1)
 day24_1 :: IO ()
 day24_1 = do
   [inputs, connections] <- splitOn [""] . lines <$> readFile "input/day24.txt"
-  let inputsList = [(i, Just ((read :: String -> Int) v)) | [i, v] <- map (splitOn ": ") inputs]
+  let inputsList = [(i, Just (read v)) | [i, v] <- map (splitOn ": ") inputs]
       wireConnections = [(w, c) | [c, w] <- map (splitOn " -> ") connections]
       connectionsMap = M.fromList wireConnections
       wiresMap = M.fromList $ [(fst wc, Nothing) | wc <- wireConnections] ++ inputsList
       outputs = map (\x -> getWireValue x wiresMap connectionsMap) (filter (\(x : _) -> x == 'z') . sort $ M.keys wiresMap)
-  print $ toDecimal outputs
+  putStrLn $ "Day 24, Puzzle 1 solution: " ++ show (toDecimal outputs)
