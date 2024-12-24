@@ -21,6 +21,7 @@ import Day18 (day18_1, day18_2)
 import Day19 (day19_1)
 import Day22 (day22_1)
 import Day23 (day23_1)
+import Day24 (day24_1)
 import System.Environment (getArgs)
 
 main :: IO ()
@@ -108,6 +109,7 @@ main = do
     "19" : "1" : _ -> day19_1
     "22" : "1" : _ -> day22_1
     "23" : "1" : _ -> day23_1
+    "24" : "1" : _ -> day24_1
     "all" : _ -> do
       day01_1
       day01_2
@@ -145,4 +147,5 @@ main = do
       day19_1
       day22_1
       day23_1
+      day24_1
     _ -> error "Not implemented"
