@@ -29,4 +29,3 @@ day25_1 = do
   putStrLn $
     "Day 25, Puzzle 1 solution: "
       ++ show (length $ keyLockCombinations keys locks)
-  print . length $ keyLockCombinations keys locks
